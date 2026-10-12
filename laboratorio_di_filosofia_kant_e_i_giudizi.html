@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Laboratorio di Filosofia: Immanuel Kant e i Giudizi</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Inter & Lexend for maximum readability -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lexend:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            readable: ['Lexend', 'sans-serif'],
+          },
+          colors: {
+            kant: {
+              50: '#f0f4f8',
+              100: '#d9e2ec',
+              200: '#bcccdc',
+              500: '#334e68',
+              700: '#102a43',
+              800: '#0b69a3',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Custom styling for enhanced legibility and focus features */
+    .reading-enhanced {
+      font-family: 'Lexend', sans-serif !important;
+      letter-spacing: 0.05em !important;
+      line-height: 1.8 !important;
+      word-spacing: 0.15em !important;
+    }
+    
+    .high-contrast {
+      background-color: #000000 !important;
+      color: #ffffff !important;
+    }
+    .high-contrast .bg-card {
+      background-color: #121212 !important;
+      border-color: #333333 !important;
+      color: #ffffff !important;
+    }
+    .high-contrast .text-muted {
+      color: #cccccc !important;
+    }
+
+    /* Transition animations */
+    .fade-in {
+      animation: fadeIn 0.4s ease-in-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen transition-colors duration-200">
+
+  <!-- Top Navigation & Learning Support Bar -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm transition-colors">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-bold text-xl shadow-md">
+          <i class="fa-solid fa-brain"></i>
+        </div>
+        <div>
+          <h1 class="text-lg md:text-xl font-bold text-slate-900 leading-tight">Laboratorio di Filosofia</h1>
+          <p class="text-xs text-indigo-600 font-medium">Immanuel Kant: La Teoria dei Giudizi</p>
+        </div>
+      </div>
+
+      <!-- Display & Sound Options -->
+      <div class="flex items-center space-x-2 bg-slate-100 p-1.5 rounded-xl text-sm border border-slate-200">
+        <!-- Text-To-Speech Button -->
+        <button id="btn-tts-toggle" onclick="toggleSpeechSupport()" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg bg-white shadow-xs text-slate-700 hover:text-indigo-600 font-medium transition-all" title="Attiva/Disattiva Lettura Vocale">
+          <i id="tts-icon" class="fa-solid fa-volume-high text-indigo-500"></i>
+          <span class="hidden sm:inline">Lettura Vocale</span>
+        </button>
+
+        <!-- Reading Mode Toggle -->
+        <button id="btn-reading-mode" onclick="toggleReadingMode()" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-slate-700 hover:text-indigo-600 font-medium transition-all" title="Cambia Carattere ad Alta Leggibilità">
+          <i class="fa-solid fa-font"></i>
+          <span class="hidden sm:inline">Leggibilità</span>
+        </button>
+
+        <!-- High Contrast Mode Toggle -->
+        <button id="btn-contrast-mode" onclick="toggleContrast()" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-slate-700 hover:text-indigo-600 font-medium transition-all" title="Modalità Alto Contrasto">
+          <i class="fa-solid fa-circle-half-stroke"></i>
+          <span class="hidden sm:inline">Contrasto</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-8">
+
+    <!-- Progress Indicator Bar -->
+    <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 mb-8 bg-card">
+      <div class="flex items-center justify-between mb-2 text-sm font-medium">
+        <span class="text-slate-600 text-muted"><i class="fa-solid fa-chart-line text-indigo-500 mr-2"></i>Avanzamento Percorso:</span>
+        <span id="progress-text" class="text-indigo-600 font-bold">0% Completato</span>
+      </div>
+      <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+        <div id="progress-bar" class="bg-indigo-600 h-3 rounded-full transition-all duration-500" style="width: 0%"></div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex border-b border-slate-200 mb-8 overflow-x-auto no-scrollbar">
+      <button onclick="switchTab('mappa')" id="tab-mappa" class="tab-btn px-6 py-3 font-semibold text-indigo-600 border-b-2 border-indigo-600 flex items-center space-x-2 whitespace-nowrap">
+        <i class="fa-solid fa-sitemap"></i>
+        <span>1. Mappa dei Concetti</span>
+      </button>
+      <button onclick="switchTab('esercizio1')" id="tab-esercizio1" class="tab-btn px-6 py-3 font-medium text-slate-500 hover:text-indigo-600 border-b-2 border-transparent flex items-center space-x-2 whitespace-nowrap">
+        <i class="fa-solid fa-list-check"></i>
+        <span>2. Classificazione</span>
+      </button>
+      <button onclick="switchTab('esercizio2')" id="tab-esercizio2" class="tab-btn px-6 py-3 font-medium text-slate-500 hover:text-indigo-600 border-b-2 border-transparent flex items-center space-x-2 whitespace-nowrap">
+        <i class="fa-solid fa-pen-to-square"></i>
+        <span>3. Completamento</span>
+      </button>
+      <button onclick="switchTab('esercizio3')" id="tab-esercizio3" class="tab-btn px-6 py-3 font-medium text-slate-500 hover:text-indigo-600 border-b-2 border-transparent flex items-center space-x-2 whitespace-nowrap">
+        <i class="fa-solid fa-circle-question"></i>
+        <span>4. Vero o Falso</span>
+      </button>
+    </div>
+
+    <!-- TAB 1: CONCEPT MAP & VISUAL STUDY GUIDE -->
+    <section id="sec-mappa" class="tab-content fade-in space-y-6">
+      
+      <div class="bg-indigo-50 border border-indigo-100 rounded-2xl p-6 bg-card">
+        <div class="flex items-start space-x-4">
+          <div class="p-3 bg-indigo-600 text-white rounded-xl">
+            <i class="fa-solid fa-book-open text-xl"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-slate-900 mb-1">Che cos'è un Giudizio per Kant?</h2>
+            <p class="text-slate-600 text-muted leading-relaxed">
+              Nella <em>Critica della ragion pura</em>, Kant spiega che la conoscenza avviene unendo un <strong>Soggetto</strong> a un <strong>Predicato</strong> (es. "Il cielo è blu"). Questo atto si chiama <strong>Giudizio</strong>. Kant individua tre tipi principali di giudizi.
+            </p>
+            <button onclick="speakText('Nella Critica della ragion pura, Kant spiega che la conoscenza avviene unendo un Soggetto a un Predicato. Questo atto si chiama Giudizio.')" class="mt-3 text-xs inline-flex items-center space-x-1.5 px-3 py-1.5 bg-indigo-100 text-indigo-700 rounded-lg hover:bg-indigo-200 transition-colors">
+              <i class="fa-solid fa-volume-low"></i>
+              <span>Ascolta Spiegazione</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- The Three Types Cards Grid -->
+      <div class="grid md:grid-cols-3 gap-6">
+        
+        <!-- Card 1: Analitico a Priori -->
+        <div class="bg-white rounded-2xl p-6 border-2 border-slate-200 hover:border-amber-400 transition-all shadow-sm flex flex-col justify-between bg-card">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-bold uppercase tracking-wider">Razionalismo</span>
+              <i class="fa-solid fa-lock text-amber-500 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 mb-2">Giudizio Analitico a priori</h3>
+            <p class="text-sm text-slate-600 text-muted mb-4">
+              Il predicato esplicita quello che è già contenuto nel soggetto. Non deriva dall'esperienza.
+            </p>
+            <ul class="text-xs space-y-2 mb-6">
+              <li class="flex items-center text-slate-700"><i class="fa-solid fa-circle-check text-emerald-500 mr-2"></i><strong>Caratteristica:</strong> Universale e Necessario</li>
+              <li class="flex items-center text-slate-700"><i class="fa-solid fa-circle-xmark text-rose-500 mr-2"></i><strong>Limite:</strong> Non aggiunge nuova conoscenza</li>
+            </ul>
+          </div>
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs">
+            <span class="font-bold text-slate-500 block mb-1">Esempio Tipico:</span>
+            <p class="font-semibold text-slate-800">"Tutti i corpi sono estesi"</p>
+            <p class="text-slate-500 mt-1 italic">(L'estensione fa già parte del concetto stesso di corpo).</p>
+          </div>
+        </div>
+
+        <!-- Card 2: Sintetico a Posteriori -->
+        <div class="bg-white rounded-2xl p-6 border-2 border-slate-200 hover:border-blue-400 transition-all shadow-sm flex flex-col justify-between bg-card">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-bold uppercase tracking-wider">Empirismo</span>
+              <i class="fa-solid fa-eye text-blue-500 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 mb-2">Giudizio Sintetico a posteriori</h3>
+            <p class="text-sm text-slate-600 text-muted mb-4">
+              Il predicato aggiunge una nuova informazione sul soggetto, basandosi sull'esperienza dei sensi.
+            </p>
+            <ul class="text-xs space-y-2 mb-6">
+              <li class="flex items-center text-slate-700"><i class="fa-solid fa-circle-check text-emerald-500 mr-2"></i><strong>Caratteristica:</strong> Fecondo (Estende la conoscenza)</li>
+              <li class="flex items-center text-slate-700"><i class="fa-solid fa-circle-xmark text-rose-500 mr-2"></i><strong>Limite:</strong> Non è universale né necessario</li>
+            </ul>
+          </div>
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-xs">
+            <span class="font-bold text-slate-500 block mb-1">Esempio Tipico:</span>
+            <p class="font-semibold text-slate-800">"Questo corpo è pesante"</p>
+            <p class="text-slate-500 mt-1 italic">(Verifico la pesantezza solo attraverso l'esperienza pratica).</p>
+          </div>
+        </div>
+
+        <!-- Card 3: Sintetico a Priori -->
+        <div class="bg-white rounded-2xl p-6 border-2 border-indigo-200 hover:border-indigo-500 transition-all shadow-sm flex flex-col justify-between bg-card relative overflow-hidden">
+          <div class="absolute top-0 right-0 bg-indigo-600 text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg">
+            RIVOLUZIONE KANTIANA
+          </div>
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <span class="px-3 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs font-bold uppercase tracking-wider">Scienza Moderna</span>
+              <i class="fa-solid fa-atom text-indigo-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 mb-2">Giudizio Sintetico a priori</h3>
+            <p class="text-sm text-slate-600 text-muted mb-4">
+              Aggiunge nuova conoscenza (sintetico) ed è universale/necessario (a priori). È la base della scienza (Matematica e Fisica).
+            </p>
+            <ul class="text-xs space-y-2 mb-6">
+              <li class="flex items-center text-slate-700"><i class="fa-solid fa-circle-check text-emerald-500 mr-2"></i><strong>Caratteristica:</strong> Fecondo e Universale</li>
+              <li class="flex items-center text-slate-700"><i class="fa-solid fa-star text-amber-500 mr-2"></i><strong>Fondamento:</strong> Forme a priori di Spazio e Tempo</li>
+            </ul>
+          </div>
+          <div class="bg-indigo-50 p-3 rounded-xl border border-indigo-100 text-xs">
+            <span class="font-bold text-indigo-600 block mb-1">Esempio Tipico:</span>
+            <p class="font-semibold text-slate-800">"7 + 5 = 12"</p>
+            <p class="text-slate-500 mt-1 italic">(Aggiunge nuova informazione e vale sempre in modo universale).</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Quick Summary Table -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm bg-card overflow-x-auto">
+        <h3 class="text-md font-bold text-slate-900 mb-4 flex items-center">
+          <i class="fa-solid fa-table-list text-indigo-500 mr-2"></i> Tabella Comparativa Sintetica
+        </h3>
+        <table class="w-full text-left text-sm">
+          <thead>
+            <tr class="border-b border-slate-200 text-xs text-slate-500 uppercase tracking-wider">
+              <th class="pb-3 pr-4">Tipo di Giudizio</th>
+              <th class="pb-3 px-4">Origine</th>
+              <th class="pb-3 px-4">Carattere</th>
+              <th class="pb-3 pl-4">Esempio Principale</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100 text-slate-700">
+            <tr>
+              <td class="py-3 pr-4 font-semibold text-amber-700">Analitico a priori</td>
+              <td class="py-3 px-4">Ragione pura</td>
+              <td class="py-3 px-4">Infecondo ma universale</td>
+              <td class="py-3 pl-4">I corpi sono estesi</td>
+            </tr>
+            <tr>
+              <td class="py-3 pr-4 font-semibold text-blue-700">Sintetico a posteriori</td>
+              <td class="py-3 px-4">Esperienza sensibile</td>
+              <td class="py-3 px-4">Fecondo ma particolare</td>
+              <td class="py-3 pl-4">Questo corpo è pesante</td>
+            </tr>
+            <tr>
+              <td class="py-3 pr-4 font-semibold text-indigo-700">Sintetico a priori</td>
+              <td class="py-3 px-4">Forme a priori + esperienza</td>
+              <td class="py-3 px-4">Fecondo e universale</td>
+              <td class="py-3 pl-4">7 + 5 = 12 / Tutto ciò che accade ha una causa</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="flex justify-end pt-4">
+        <button onclick="switchTab('esercizio1')" class="px-6 py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 shadow-md transition-all flex items-center space-x-2">
+          <span>Inizia gli Esercizi</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+
+    </section>
+
+    <!-- TAB 2: EXERCISE 1 (Matching / Classification) -->
+    <section id="sec-esercizio1" class="tab-content hidden fade-in space-y-6">
+      
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm bg-card">
+        <h2 class="text-lg font-bold text-slate-900 mb-2">Esercizio 1: Classifica le Proposizioni</h2>
+        <p class="text-sm text-slate-600 text-muted mb-6">
+          Seleziona la tipologia corretta per ciascuna affermazione. Hai fino a <strong>2 tentativi</strong> per domanda.
+        </p>
+
+        <div class="space-y-6">
+          
+          <!-- Item 1 -->
+          <div id="ex1-q0-container" class="p-4 rounded-xl border border-slate-200 bg-slate-50 transition-all bg-card">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-indigo-600 uppercase">Affermazione 1</span>
+                <p class="text-base font-medium text-slate-800">"Tutti i triangoli hanno tre angoli."</p>
+              </div>
+              <div class="sm:w-64">
+                <select id="ex1-q0-select" class="w-full p-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                  <option value="">-- Seleziona il tipo --</option>
+                  <option value="analitico">Analitico a priori</option>
+                  <option value="sintetico_post">Sintetico a posteriori</option>
+                  <option value="sintetico_prio">Sintetico a priori</option>
+                </select>
+              </div>
+            </div>
+            <div id="ex1-q0-feedback" class="mt-3 text-sm hidden"></div>
+          </div>
+
+          <!-- Item 2 -->
+          <div id="ex1-q1-container" class="p-4 rounded-xl border border-slate-200 bg-slate-50 transition-all bg-card">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-indigo-600 uppercase">Affermazione 2</span>
+                <p class="text-base font-medium text-slate-800">"La strada davanti a casa è bagnata."</p>
+              </div>
+              <div class="sm:w-64">
+                <select id="ex1-q1-select" class="w-full p-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                  <option value="">-- Seleziona il tipo --</option>
+                  <option value="analitico">Analitico a priori</option>
+                  <option value="sintetico_post">Sintetico a posteriori</option>
+                  <option value="sintetico_prio">Sintetico a priori</option>
+                </select>
+              </div>
+            </div>
+            <div id="ex1-q1-feedback" class="mt-3 text-sm hidden"></div>
+          </div>
+
+          <!-- Item 3 -->
+          <div id="ex1-q2-container" class="p-4 rounded-xl border border-slate-200 bg-slate-50 transition-all bg-card">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div class="flex-1">
+                <span class="text-xs font-bold text-indigo-600 uppercase">Affermazione 3</span>
+                <p class="text-base font-medium text-slate-800">"La linea retta è la più breve tra due punti."</p>
+              </div>
+              <div class="sm:w-64">
+                <select id="ex1-q2-select" class="w-full p-2.5 bg-white border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                  <option value="">-- Seleziona il tipo --</option>
+                  <option value="analitico">Analitico a priori</option>
+                  <option value="sintetico_post">Sintetico a posteriori</option>
+                  <option value="sintetico_prio">Sintetico a priori</option>
+                </select>
+              </div>
+            </div>
+            <div id="ex1-q2-feedback" class="mt-3 text-sm hidden"></div>
+          </div>
+
+        </div>
+
+        <div class="mt-6 flex justify-between items-center">
+          <button onclick="checkExercise1()" class="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-all shadow-sm">
+            Verifica Risposte
+          </button>
+          <button onclick="switchTab('esercizio2')" id="btn-next-ex1" class="hidden px-5 py-2.5 bg-slate-800 text-white rounded-xl font-medium hover:bg-slate-900 transition-all">
+            Prosegui <i class="fa-solid fa-arrow-right ml-2"></i>
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- TAB 3: EXERCISE 2 (Fill in the blanks) -->
+    <section id="sec-esercizio2" class="tab-content hidden fade-in space-y-6">
+      
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm bg-card">
+        <h2 class="text-lg font-bold text-slate-900 mb-2">Esercizio 2: Completamento del Testo</h2>
+        <p class="text-sm text-slate-600 text-muted mb-4">
+          Inserisci i termini giusti al posto corretto scegliendoli dal box dei suggerimenti.
+        </p>
+
+        <!-- Word Bank -->
+        <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100 mb-6 bg-card">
+          <span class="text-xs font-bold text-indigo-700 uppercase tracking-wider block mb-2">Banca delle Parole:</span>
+          <div class="flex flex-wrap gap-2 text-sm font-semibold text-indigo-900">
+            <span class="px-3 py-1 bg-white rounded-lg border border-indigo-200 shadow-xs">esperienza</span>
+            <span class="px-3 py-1 bg-white rounded-lg border border-indigo-200 shadow-xs">universali</span>
+            <span class="px-3 py-1 bg-white rounded-lg border border-indigo-200 shadow-xs">fecondi</span>
+            <span class="px-3 py-1 bg-white rounded-lg border border-indigo-200 shadow-xs">matematica</span>
+          </div>
+        </div>
+
+        <!-- Fillable sentences -->
+        <div class="space-y-6 text-base leading-relaxed text-slate-800">
+          
+          <div id="ex2-q0-container" class="p-4 bg-slate-50 rounded-xl border border-slate-200 bg-card">
+            <p>
+              1. I giudizi sintetici a priori non derivano dall'
+              <input type="text" id="ex2-q0-input" class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm w-36 font-semibold text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="...">
+              ma si applicano ad essa.
+            </p>
+            <div id="ex2-q0-feedback" class="mt-2 text-sm hidden"></div>
+          </div>
+
+          <div id="ex2-q1-container" class="p-4 bg-slate-50 rounded-xl border border-slate-200 bg-card">
+            <p>
+              2. Essi sono detti "sintetici" perché sono 
+              <input type="text" id="ex2-q1-input" class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm w-36 font-semibold text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="...">,
+              ovvero aggiungono nuove conoscenze.
+            </p>
+            <div id="ex2-q1-feedback" class="mt-2 text-sm hidden"></div>
+          </div>
+
+          <div id="ex2-q2-container" class="p-4 bg-slate-50 rounded-xl border border-slate-200 bg-card">
+            <p>
+              3. Essi sono detti "a priori" perché sono 
+              <input type="text" id="ex2-q2-input" class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm w-36 font-semibold text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="...">
+              e necessari, valevoli per ogni mente umana.
+            </p>
+            <div id="ex2-q2-feedback" class="mt-2 text-sm hidden"></div>
+          </div>
+
+          <div id="ex2-q3-container" class="p-4 bg-slate-50 rounded-xl border border-slate-200 bg-card">
+            <p>
+              4. Un esempio di scienza basata sui giudizi sintetici a priori è la 
+              <input type="text" id="ex2-q3-input" class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm w-36 font-semibold text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="...">.
+            </p>
+            <div id="ex2-q3-feedback" class="mt-2 text-sm hidden"></div>
+          </div>
+
+        </div>
+
+        <div class="mt-6 flex justify-between items-center">
+          <button onclick="checkExercise2()" class="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-all shadow-sm">
+            Verifica Risposte
+          </button>
+          <button onclick="switchTab('esercizio3')" id="btn-next-ex2" class="hidden px-5 py-2.5 bg-slate-800 text-white rounded-xl font-medium hover:bg-slate-900 transition-all">
+            Prosegui <i class="fa-solid fa-arrow-right ml-2"></i>
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- TAB 4: EXERCISE 3 (True or False) -->
+    <section id="sec-esercizio3" class="tab-content hidden fade-in space-y-6">
+      
+      <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm bg-card">
+        <h2 class="text-lg font-bold text-slate-900 mb-2">Esercizio 3: Vero o Falso?</h2>
+        <p class="text-sm text-slate-600 text-muted mb-6">
+          Valuta se le seguenti affermazioni sulla filosofia di Kant sono vere o false.
+        </p>
+
+        <div class="space-y-6">
+          
+          <!-- Q0 -->
+          <div id="ex3-q0-container" class="p-4 bg-slate-50 rounded-xl border border-slate-200 bg-card">
+            <p class="font-medium text-slate-800 mb-3">1. Per Kant, i giudizi analitici a priori derivano interamente dall'esperienza dei sensi.</p>
+            <div class="flex items-center space-x-4">
+              <label class="inline-flex items-center space-x-2 cursor-pointer">
+                <input type="radio" name="ex3-q0" value="Vero" class="text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                <span class="text-sm font-semibold">Vero</span>
+              </label>
+              <label class="inline-flex items-center space-x-2 cursor-pointer">
+                <input type="radio" name="ex3-q0" value="Falso" class="text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                <span class="text-sm font-semibold">Falso</span>
+              </label>
+            </div>
+            <div id="ex3-q0-feedback" class="mt-2 text-sm hidden"></div>
+          </div>
+
+          <!-- Q1 -->
+          <div id="ex3-q1-container" class="p-4 bg-slate-50 rounded-xl border border-slate-200 bg-card">
+            <p class="font-medium text-slate-800 mb-3">2. Gli empiristi utilizzavano principalmente giudizi sintetici a posteriori.</p>
+            <div class="flex items-center space-x-4">
+              <label class="inline-flex items-center space-x-2 cursor-pointer">
+                <input type="radio" name="ex3-q1" value="Vero" class="text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                <span class="text-sm font-semibold">Vero</span>
+              </label>
+              <label class="inline-flex items-center space-x-2 cursor-pointer">
+                <input type="radio" name="ex3-q1" value="Falso" class="text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                <span class="text-sm font-semibold">Falso</span>
+              </label>
+            </div>
+            <div id="ex3-q1-feedback" class="mt-2 text-sm hidden"></div>
+          </div>
+
+          <!-- Q2 -->
+          <div id="ex3-q2-container" class="p-4 bg-slate-50 rounded-xl border border-slate-200 bg-card">
+            <p class="font-medium text-slate-800 mb-3">3. I giudizi sintetici a priori combinano la fecondità della conoscenza con l'universalità.</p>
+            <div class="flex items-center space-x-4">
+              <label class="inline-flex items-center space-x-2 cursor-pointer">
+                <input type="radio" name="ex3-q2" value="Vero" class="text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                <span class="text-sm font-semibold">Vero</span>
+              </label>
+              <label class="inline-flex items-center space-x-2 cursor-pointer">
+                <input type="radio" name="ex3-q2" value="Falso" class="text-indigo-600 focus:ring-indigo-500 h-4 w-4">
+                <span class="text-sm font-semibold">Falso</span>
+              </label>
+            </div>
+            <div id="ex3-q2-feedback" class="mt-2 text-sm hidden"></div>
+          </div>
+
+        </div>
+
+        <div class="mt-6 flex justify-between items-center">
+          <button onclick="checkExercise3()" class="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-all shadow-sm">
+            Verifica Risposte Finale
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- COMPLETION CELEBRATION MODAL -->
+    <div id="celebration-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+      <div class="bg-white rounded-3xl max-w-lg w-full p-8 text-center shadow-2xl border border-slate-100 fade-in bg-card">
+        <div class="w-20 h-20 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl shadow-inner">
+          <i class="fa-solid fa-award"></i>
+        </div>
+        
+        <h2 class="text-2xl font-bold text-slate-900 mb-2">Ottimo Lavoro!</h2>
+        <p class="text-slate-600 text-muted mb-6">
+          Hai completato con successo l'attività di revisione sui <strong>Giudizi di Immanuel Kant</strong>!
+        </p>
+
+        <!-- Stars rating -->
+        <div class="flex justify-center space-x-2 text-2xl text-amber-400 mb-6">
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+        </div>
+
+        <div class="bg-indigo-50 p-4 rounded-xl border border-indigo-100 mb-6 text-left text-sm text-indigo-900">
+          <p class="font-semibold mb-1"><i class="fa-solid fa-check-double mr-2"></i>Riepilogo Competenze:</p>
+          <ul class="list-disc list-inside space-y-1 text-xs text-indigo-800">
+            <li>Comprensione della struttura del Giudizio</li>
+            <li>Distinzione tra Analitico, Sintetico, A Priori e A Posteriori</li>
+            <li>Riconoscimento del fondamento della scienza moderna in Kant</li>
+          </ul>
+        </div>
+
+        <button onclick="restartActivity()" class="w-full py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all shadow-md">
+          Ricomincia o Ripeti l'Attività
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    // Global Application State
+    const state = {
+      progress: {
+        mappaViewed: true,
+        ex1Done: false,
+        ex2Done: false,
+        ex3Done: false
+      },
+      attempts: {
+        ex1: [0, 0, 0],
+        ex2: [0, 0, 0, 0],
+        ex3: [0, 0, 0]
+      },
+      speechEnabled: false,
+      readingMode: false,
+      contrastMode: false
+    };
+
+    // Exercise 1 Answers & Hints
+    const ex1Data = [
+      { correct: "analitico", hint: "Suggerimento: L'avere tre angoli fa già parte del concetto stesso di 'triangolo'. Non serve un'esperienza per scoprirlo." },
+      { correct: "sintetico_post", hint: "Suggerimento: Devi guardare la strada (fare esperienza) per sapere se è bagnata." },
+      { correct: "sintetico_prio", hint: "Suggerimento: È un principio della geometria: aggiunge novità ed è sempre valido in modo universale." }
+    ];
+
+    // Exercise 2 Answers & Hints
+    const ex2Data = [
+      { correct: "esperienza", hint: "Suggerimento: Non nascono dai sensi o dalla prassi esterna." },
+      { correct: "fecondi", hint: "Suggerimento: Significa che 'producono' o arricchiscono la conoscenza." },
+      { correct: "universali", hint: "Suggerimento: Valgono per tutti gli uomini, sempre e ovunque." },
+      { correct: "matematica", hint: "Suggerimento: Scienza esatta basata su numeri e forme a priori." }
+    ];
+
+    // Exercise 3 Answers & Hints
+    const ex3Data = [
+      { correct: "Falso", hint: "Suggerimento: I giudizi 'a priori' prescindono dall'esperienza." },
+      { correct: "Vero", hint: "Suggerimento: Gli empiristi (come Locke e Hume) basavano la conoscenza sull'esperienza sensibile." },
+      { correct: "Vero", hint: "Suggerimento: È la grande scoperta di Kant per spiegare come sia possibile la scienza." }
+    ];
+
+    // Tab Navigation Logic
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(el => {
+        el.classList.remove('text-indigo-600', 'border-indigo-600', 'font-semibold');
+        el.classList.add('text-slate-500', 'border-transparent', 'font-medium');
+      });
+
+      document.getElementById('sec-' + tabId).classList.remove('hidden');
+      const activeBtn = document.getElementById('tab-' + tabId);
+      activeBtn.classList.add('text-indigo-600', 'border-indigo-600', 'font-semibold');
+      activeBtn.classList.remove('text-slate-500', 'border-transparent', 'font-medium');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Text to Speech Support
+    function toggleSpeechSupport() {
+      state.speechEnabled = !state.speechEnabled;
+      const btn = document.getElementById('btn-tts-toggle');
+      if (state.speechEnabled) {
+        btn.classList.add('bg-indigo-50', 'text-indigo-600', 'border-indigo-300');
+        speakText("Lettura vocale attivata. Clicca sugli elementi per ascoltarli.");
+      } else {
+        btn.classList.remove('bg-indigo-50', 'text-indigo-600', 'border-indigo-300');
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    function speakText(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'it-IT';
+        utterance.rate = 0.95;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    // Reading Accessibility Features
+    function toggleReadingMode() {
+      state.readingMode = !state.readingMode;
+      document.body.classList.toggle('reading-enhanced', state.readingMode);
+      document.getElementById('btn-reading-mode').classList.toggle('text-indigo-600', state.readingMode);
+    }
+
+    function toggleContrast() {
+      state.contrastMode = !state.contrastMode;
+      document.body.classList.toggle('high-contrast', state.contrastMode);
+      document.getElementById('btn-contrast-mode').classList.toggle('text-indigo-600', state.contrastMode);
+    }
+
+    // Update Overall Progress Indicator
+    function updateProgress() {
+      let completedCount = 0;
+      if (state.progress.ex1Done) completedCount++;
+      if (state.progress.ex2Done) completedCount++;
+      if (state.progress.ex3Done) completedCount++;
+
+      const percentage = Math.round((completedCount / 3) * 100);
+      document.getElementById('progress-bar').style.width = percentage + '%';
+      document.getElementById('progress-text').innerText = percentage + '% Completato';
+
+      if (completedCount === 3) {
+        setTimeout(() => {
+          document.getElementById('celebration-modal').classList.remove('hidden');
+        }, 600);
+      }
+    }
+
+    // Check Exercise 1
+    function checkExercise1() {
+      let allCorrect = true;
+
+      ex1Data.forEach((item, idx) => {
+        const select = document.getElementById(`ex1-q${idx}-select`);
+        const feedback = document.getElementById(`ex1-q${idx}-feedback`);
+        const val = select.value;
+
+        if (val === item.correct) {
+          feedback.className = "mt-3 text-sm p-2.5 rounded-lg bg-emerald-50 text-emerald-800 font-medium block";
+          feedback.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i>Esatto!';
+          select.disabled = true;
+        } else {
+          allCorrect = false;
+          state.attempts.ex1[idx]++;
+
+          if (state.attempts.ex1[idx] === 1) {
+            feedback.className = "mt-3 text-sm p-2.5 rounded-lg bg-amber-50 text-amber-800 font-medium block";
+            feedback.innerHTML = `<i class="fa-solid fa-lightbulb text-amber-600 mr-2"></i>${item.hint}`;
+          } else {
+            feedback.className = "mt-3 text-sm p-2.5 rounded-lg bg-slate-100 text-slate-800 font-medium block";
+            const correctText = select.querySelector(`option[value="${item.correct}"]`).text;
+            feedback.innerHTML = `<i class="fa-solid fa-circle-info text-indigo-600 mr-2"></i>La risposta corretta è: <strong>${correctText}</strong>`;
+            select.value = item.correct;
+            select.disabled = true;
+          }
+        }
+      });
+
+      if (allCorrect || state.attempts.ex1.every(a => a >= 2)) {
+        state.progress.ex1Done = true;
+        document.getElementById('btn-next-ex1').classList.remove('hidden');
+        updateProgress();
+      }
+    }
+
+    // Check Exercise 2
+    function checkExercise2() {
+      let allCorrect = true;
+
+      ex2Data.forEach((item, idx) => {
+        const input = document.getElementById(`ex2-q${idx}-input`);
+        const feedback = document.getElementById(`ex2-q${idx}-feedback`);
+        const val = input.value.trim().toLowerCase();
+
+        if (val === item.correct) {
+          feedback.className = "mt-2 text-sm p-2 rounded-lg bg-emerald-50 text-emerald-800 font-medium block";
+          feedback.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i>Esatto!';
+          input.disabled = true;
+        } else {
+          allCorrect = false;
+          state.attempts.ex2[idx]++;
+
+          if (state.attempts.ex2[idx] === 1) {
+            feedback.className = "mt-2 text-sm p-2 rounded-lg bg-amber-50 text-amber-800 font-medium block";
+            feedback.innerHTML = `<i class="fa-solid fa-lightbulb text-amber-600 mr-2"></i>${item.hint}`;
+          } else {
+            feedback.className = "mt-2 text-sm p-2 rounded-lg bg-slate-100 text-slate-800 font-medium block";
+            feedback.innerHTML = `<i class="fa-solid fa-circle-info text-indigo-600 mr-2"></i>La parola corretta è: <strong>${item.correct}</strong>`;
+            input.value = item.correct;
+            input.disabled = true;
+          }
+        }
+      });
+
+      if (allCorrect || state.attempts.ex2.every(a => a >= 2)) {
+        state.progress.ex2Done = true;
+        document.getElementById('btn-next-ex2').classList.remove('hidden');
+        updateProgress();
+      }
+    }
+
+    // Check Exercise 3
+    function checkExercise3() {
+      let allCorrect = true;
+
+      ex3Data.forEach((item, idx) => {
+        const selectedRadio = document.querySelector(`input[name="ex3-q${idx}"]:checked`);
+        const feedback = document.getElementById(`ex3-q${idx}-feedback`);
+
+        if (selectedRadio && selectedRadio.value === item.correct) {
+          feedback.className = "mt-2 text-sm p-2 rounded-lg bg-emerald-50 text-emerald-800 font-medium block";
+          feedback.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 mr-2"></i>Esatto!';
+        } else {
+          allCorrect = false;
+          state.attempts.ex3[idx]++;
+
+          if (state.attempts.ex3[idx] === 1) {
+            feedback.className = "mt-2 text-sm p-2 rounded-lg bg-amber-50 text-amber-800 font-medium block";
+            feedback.innerHTML = `<i class="fa-solid fa-lightbulb text-amber-600 mr-2"></i>${item.hint}`;
+          } else {
+            feedback.className = "mt-2 text-sm p-2 rounded-lg bg-slate-100 text-slate-800 font-medium block";
+            feedback.innerHTML = `<i class="fa-solid fa-circle-info text-indigo-600 mr-2"></i>La risposta corretta è: <strong>${item.correct}</strong>`;
+          }
+        }
+      });
+
+      if (allCorrect || state.attempts.ex3.every(a => a >= 2)) {
+        state.progress.ex3Done = true;
+        updateProgress();
+      }
+    }
+
+    // Restart Application
+    function restartActivity() {
+      window.location.reload();
+    }
+  </script>
+</body>
+</html>
