@@ -398,7 +398,7 @@
           
           <div id="ex2-q0-container" class="p-4 bg-slate-50 rounded-xl border border-slate-200 bg-card">
             <p>
-              1. I giudizi sintetici a priori non derivano dall'
+1. I giudizi sintetici a priori non derivano dall'
               <input type="text" id="ex2-q0-input" class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm w-36 font-semibold text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="...">
               ma si applicano ad essa.
             </p>
@@ -407,7 +407,7 @@
 
           <div id="ex2-q1-container" class="p-4 bg-slate-50 rounded-xl border border-slate-200 bg-card">
             <p>
-              2. Essi sono detti "sintetici" perché sono 
+2. Essi sono detti "sintetici" perché sono 
               <input type="text" id="ex2-q1-input" class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm w-36 font-semibold text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="...">,
               ovvero aggiungono nuove conoscenze.
             </p>
@@ -416,7 +416,7 @@
 
           <div id="ex2-q2-container" class="p-4 bg-slate-50 rounded-xl border border-slate-200 bg-card">
             <p>
-              3. Essi sono detti "a priori" perché sono 
+3. Essi sono detti "a priori" perché sono 
               <input type="text" id="ex2-q2-input" class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm w-36 font-semibold text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="...">
               e necessari, valevoli per ogni mente umana.
             </p>
@@ -425,7 +425,7 @@
 
           <div id="ex2-q3-container" class="p-4 bg-slate-50 rounded-xl border border-slate-200 bg-card">
             <p>
-              4. Un esempio di scienza basata sui giudizi sintetici a priori è la 
+4. Un esempio di scienza basata sui giudizi sintetici a priori è la 
               <input type="text" id="ex2-q3-input" class="px-3 py-1.5 border border-slate-300 rounded-lg text-sm w-36 font-semibold text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="...">.
             </p>
             <div id="ex2-q3-feedback" class="mt-2 text-sm hidden"></div>
@@ -612,26 +612,63 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Text to Speech Support
+    // Robust Italian Text to Speech Engine
+    let italianVoice = null;
+
+    function findItalianVoice() {
+      if (!('speechSynthesis' in window)) return;
+      const voices = window.speechSynthesis.getVoices();
+      if (!voices || voices.length === 0) return;
+
+      // Match exact Italian (it-IT), Italian dialect, or name containing Italian
+      italianVoice = voices.find(v => v.lang === 'it-IT' || v.lang === 'it_IT') ||
+                     voices.find(v => v.lang.startsWith('it')) ||
+                     voices.find(v => v.name.toLowerCase().includes('italian') || v.name.toLowerCase().includes('italiano')) ||
+                     null;
+    }
+
+    // Register voice changes listener across browsers
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = findItalianVoice;
+      findItalianVoice();
+    }
+
+    function speakText(text) {
+      if (!('speechSynthesis' in window)) {
+        alert("La sintesi vocale non è supportata dal browser.");
+        return;
+      }
+
+      // Reset and resume queue to prevent browser lock
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.resume();
+
+      if (!italianVoice) {
+        findItalianVoice();
+      }
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'it-IT';
+      if (italianVoice) {
+        utterance.voice = italianVoice;
+      }
+      utterance.rate = 0.92; // Slightly calibrated pace for study comprehension
+      utterance.pitch = 1.0;
+
+      window.speechSynthesis.speak(utterance);
+    }
+
     function toggleSpeechSupport() {
       state.speechEnabled = !state.speechEnabled;
       const btn = document.getElementById('btn-tts-toggle');
       if (state.speechEnabled) {
         btn.classList.add('bg-indigo-50', 'text-indigo-600', 'border-indigo-300');
-        speakText("Lettura vocale attivata. Clicca sugli elementi per ascoltarli.");
+        speakText("Lettura vocale attivata. Clicca sui pulsanti di ascolto per riprodurre le spiegazioni.");
       } else {
         btn.classList.remove('bg-indigo-50', 'text-indigo-600', 'border-indigo-300');
-        window.speechSynthesis.cancel();
-      }
-    }
-
-    function speakText(text) {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'it-IT';
-        utterance.rate = 0.95;
-        window.speechSynthesis.speak(utterance);
+        if ('speechSynthesis' in window) {
+          window.speechSynthesis.cancel();
+        }
       }
     }
 
