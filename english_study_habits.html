@@ -119,4 +119,420 @@
             background-color: var(--card-bg);
             border: 2px solid #2563eb;
             border-radius: 12px;
-            width:
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            overflow: hidden;
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.4);
+            min-height: 550px;
+        }
+
+        @media (max-width: 900px) {
+            .slide-card {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .image-container {
+            background-color: var(--inner-box);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            padding: 1rem;
+            border-right: 2px solid #1e5882;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .placeholder-box {
+            width: 100%;
+            height: 350px;
+            border: 2px dashed #3b82f6;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-muted);
+            background: rgba(10, 39, 60, 0.5);
+        }
+
+        .text-container {
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .slide-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .slide-tag {
+            color: var(--accent-gold);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .slide-title {
+            font-size: 1.8rem;
+            color: #ffffff;
+            line-height: 1.2;
+            margin-bottom: 0.5rem;
+        }
+
+        .slide-subtitle {
+            font-size: 1.1rem;
+            color: var(--accent-cyan);
+            font-style: italic;
+        }
+
+        .content-box {
+            background-color: var(--inner-box);
+            border-left: 4px solid var(--accent-gold);
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            color: #e2e8f0;
+        }
+
+        .points-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .points-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .bullet {
+            background-color: #1e5882;
+            color: var(--accent-gold);
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-top: 2px;
+            border: 1px solid #3b82f6;
+        }
+
+        /* Footer Nav Controls */
+        footer {
+            background-color: var(--bg-header);
+            padding: 1rem 1.5rem;
+            border-top: 2px solid #1d4ed8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .progress-bar {
+            height: 5px;
+            background: #1e5882;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-cyan));
+            width: 11.1%;
+            transition: width 0.3s ease;
+        }
+
+        /* Print Mode for PDF Export */
+        @media print {
+            header, footer, .controls {
+                display: none !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .slide-card {
+                page-break-after: always;
+                border: none !important;
+                box-shadow: none !important;
+                grid-template-columns: 1fr 1fr !important;
+                background: white !important;
+                color: black !important;
+                min-height: auto !important;
+            }
+            .content-box {
+                background: #f1f5f9 !important;
+                color: black !important;
+                border-left-color: #d97706 !important;
+            }
+            .text-container {
+                color: black !important;
+            }
+            .slide-title {
+                color: black !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <span class="badge">High School</span>
+            <h1>High School Students - Study Guide: Ultimate Habits</h1>
+        </div>
+        <div class="controls">
+            <select id="slideSelect" onchange="goToSlide(parseInt(this.value))">
+                <option value="0">Cover: Introduction</option>
+                <option value="1">Habit 1: Active Recall</option>
+                <option value="2">Habit 2: Syllabus Triage</option>
+                <option value="3">Habit 3: Digital Friction</option>
+                <option value="4">Habit 4: Feynman Technique</option>
+                <option value="5">Habit 5: Time Boxing</option>
+                <option value="6">Habit 6: Mock Simulation</option>
+                <option value="7">Habit 7: Sleep Storage</option>
+                <option value="8">Final: Note from Prof. Nives</option>
+            </select>
+            <button onclick="window.print()">🖨️ Print / Save as PDF</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="slide-card">
+            <div class="image-container" id="imgBox">
+                <!-- Image renders directly here -->
+            </div>
+            <div class="text-container" id="textBox">
+                <!-- Slide text renders here -->
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div id="slideCounter" style="color: var(--text-muted); font-size: 0.9rem;">Slide 1 of 9</div>
+        <div class="nav-buttons">
+            <button onclick="prevSlide()">◀ Previous</button>
+            <button onclick="nextSlide()" class="btn-accent">Next ▶</button>
+        </div>
+    </footer>
+
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+    <script>
+        const slides = [
+            {
+                tag: "Booklet Cover",
+                title: "STUDY GUIDE: ULTIMATE HABITS",
+                subtitle: "\"It's not punishment, it's strategy!\"",
+                concept: "Meet Marco and Giulia! Two 18-year-old high school seniors navigating final exam stress. Preparing for graduation exams isn't about pulling 14-hour panic-fueled cramming sessions—it's about building brain habits that work with human biology.",
+                bullets: [
+                    "7 Science-backed study strategies tailored for final year students.",
+                    "Designed to eliminate exam anxiety and maximize memory retention.",
+                    "Work smarter so you still have time for coffee breaks with friends!"
+                ],
+                defaultImg: "cover.jpg"
+            },
+            {
+                tag: "Habit #1",
+                title: "Active Recall over Passive Highlighting",
+                subtitle: "The Flashcard Shield",
+                concept: "Marco defeats the giant Highlighter Monster by putting away marker pens and pulling out an Active Recall Flashcard Shield!",
+                bullets: [
+                    "<strong>The Trap:</strong> Re-reading notes or highlighting gives an illusion of competence without building recall pathways.",
+                    "<strong>Blurting Method:</strong> Read a topic, close the book, and write down everything you remember on a blank paper.",
+                    "<strong>Self-Testing:</strong> Use flashcards (Anki/Quizlet) to test your brain before looking at answers."
+                ],
+                defaultImg: "habit1.jpg"
+            },
+            {
+                tag: "Habit #2",
+                title: "Syllabus Triage & Spaced Repetition",
+                subtitle: "The Study ER Desk",
+                concept: "Giulia acts as an Emergency Room triage nurse, sorting incoming study topics into Red (Weak Spots), Yellow (Medium), and Green (Mastered).",
+                bullets: [
+                    "<strong>The Trap:</strong> Spending hours reviewing easy, favorite subjects while ignoring hard weak spots until 3 days before exams.",
+                    "<strong>Red Alert Triage:</strong> Prioritize high-weight, difficult exam topics first.",
+                    "<strong>Spaced Repetition:</strong> Review topics at spaced intervals (Day 1 → Day 3 → Day 7 → Day 21) to lock memories in permanently."
+                ],
+                defaultImg: "habit2.jpg"
+            },
+            {
+                tag: "Habit #3",
+                title: "Digital Friction & Dopamine Locks",
+                subtitle: "The Notification Shield",
+                concept: "Marco battles a needy Smartphone Octopus Monster that tries to grab his pen. Next to him is a locked phone box to protect his focus.",
+                bullets: [
+                    "<strong>The Trap:</strong> Every phone notification shatters deep concentration, taking up to 20 minutes to recover focus.",
+                    "<strong>Out of Sight:</strong> Put your phone in another room or a timed lock box during focus blocks.",
+                    "<strong>Digital Friction:</strong> Use app blockers (like Forest or Freedom) to keep social media off-limits until study breaks."
+                ],
+                defaultImg: "habit3.jpg"
+            },
+            {
+                tag: "Habit #4",
+                title: "Feynman Technique & Peer Teaching",
+                subtitle: "Explain It to a Cat!",
+                concept: "Marco breaks down complex calculus and philosophy on a mini whiteboard to his pet cat Fuffi, ensuring he uses plain language with no textbook jargon.",
+                bullets: [
+                    "<strong>The Trap:</strong> Hiding behind complex academic buzzwords without truly understanding the core concept.",
+                    "<strong>Plain Language:</strong> If you can't explain a topic simply to a friend (or pet!), you don't fully understand it yet.",
+                    "<strong>Study Groups:</strong> Teach classmates one concept over afternoon coffee breaks."
+                ],
+                defaultImg: "habit4.jpg"
+            },
+            {
+                tag: "Habit #5",
+                title: "Time Boxing & Focus Sprints",
+                subtitle: "The Pomodoro Boxing Ring",
+                concept: "Giulia takes a 5-minute coffee break in her boxing ring corner while her giant textbook sits on a stool, completely exhausted after a 25-minute focus round!",
+                bullets: [
+                    "<strong>The Trap:</strong> Attempting 5 continuous hours of non-stop studying leads to rapid mental fatigue.",
+                    "<strong>25 / 5 Rule:</strong> Work in 25-minute intense focus sprints followed by a strict 5-minute break.",
+                    "<strong>50 / 10 Sprint:</strong> Use longer 50-minute blocks for essay writing followed by a 10-minute break."
+                ],
+                defaultImg: "habit5.jpg"
+            },
+            {
+                tag: "Habit #6",
+                title: "Exam Simulation & Time Management",
+                subtitle: "The Formula 1 Pit Stop",
+                concept: "Marco works at a desk styled like an F1 pit stop with a digital countdown timer, practicing answering past paper questions under strict realistic conditions.",
+                bullets: [
+                    "<strong>The Trap:</strong> Knowing subject material in theory, but running out of time during the actual exam.",
+                    "<strong>Timed Practice:</strong> Complete past exam papers with a timer counting down.",
+                    "<strong>Pacing Plan:</strong> Allocate explicit time limits per section (e.g., 15 min outline, 90 min writing, 15 min review)."
+                ],
+                defaultImg: "habit6.jpg"
+            },
+            {
+                tag: "Habit #7",
+                title: "Sleep Storage & REM Consolidation",
+                subtitle: "The Nighttime Brain Workers",
+                concept: "While Giulia sleeps soundly, tiny brain construction workers inside her dream bubble neatly file away history dates and formulas into long-term storage cabinets.",
+                bullets: [
+                    "<strong>The Trap:</strong> Pulling all-nighters right before big exams impairs memory formation.",
+                    "<strong>REM Memory Locking:</strong> Deep sleep converts short-term memories into permanent long-term storage.",
+                    "<strong>Target 8 Hours:</strong> Sleep is an essential stage of the learning process—not a reward for finishing."
+                ],
+                defaultImg: "habit7.jpg"
+            },
+            {
+                tag: "A Note from Your Teacher",
+                title: "Thank You & Best of Luck!",
+                subtitle: "\"Believe in your preparation, trust your process.\"",
+                concept: "Dear Students, preparing for your final milestones is a journey of growth, resilience, and curiosity. Remember that consistency beats intensity every time—take care of your mind, stay curious, and support one another.",
+                bullets: [
+                    "<strong>From Prof. Nives:</strong> Dedicated to helping you master English and effective learning habits with confidence.",
+                    "<strong>Stay Connected:</strong> Review these habits whenever you feel overwhelmed during exam prep.",
+                    "<strong>You've Got This:</strong> Keep calm, trust the strategies you practiced, and give it your very best!"
+                ],
+                defaultImg: "teacher.jpg"
+            }
+        ];
+
+        let currentSlide = 0;
+
+        function renderSlide() {
+            const slide = slides[currentSlide];
+            
+            // Image Area
+            const imgBox = document.getElementById('imgBox');
+            imgBox.innerHTML = `
+                <img src="${slide.defaultImg}" alt="${slide.title}" onerror="this.style.display='none'; document.getElementById('placeholder-${currentSlide}').style.display='flex';">
+                <div class="placeholder-box" id="placeholder-${currentSlide}" style="display:none;">
+                    <p style="font-size: 1.2rem; font-weight: bold; margin-bottom: 0.5rem; color: #ffffff;">📷 ${slide.title}</p>
+                    <p style="font-size: 0.85rem; color: var(--accent-cyan);">${slide.defaultImg} not found</p>
+                </div>
+            `;
+
+            // Text Area
+            const textBox = document.getElementById('textBox');
+            const bulletsHTML = slide.bullets.map((b, i) => `
+                <li>
+                    <span class="bullet">${i + 1}</span>
+                    <span>${b}</span>
+                </li>
+            `).join('');
+
+            textBox.innerHTML = `
+                <div>
+                    <div class="slide-header">
+                        <span class="slide-tag">${slide.tag}</span>
+                        <h2 class="slide-title">${slide.title}</h2>
+                        <div class="slide-subtitle">${slide.subtitle}</div>
+                    </div>
+                    <div class="content-box">
+                        ${slide.concept}
+                    </div>
+                    <ul class="points-list">
+                        ${bulletsHTML}
+                    </ul>
+                </div>
+            `;
+
+            // UI updates
+            document.getElementById('slideSelect').value = currentSlide;
+            document.getElementById('slideCounter').innerText = `Slide ${currentSlide + 1} of ${slides.length}`;
+            document.getElementById('progressFill').style.width = `${((currentSlide + 1) / slides.length) * 100}%`;
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                renderSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                renderSlide();
+            }
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            renderSlide();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        renderSlide();
+    </script>
+</body>
+</html>
