@@ -6,11 +6,11 @@
     <title>High School Students - Study Guide: Ultimate Habits</title>
     <style>
         :root {
-            --bg-sea: #0f3854;            /* Rich Deep Sea Blue */
-            --bg-header: #0a273c;         /* Dark Ocean Blue */
-            --card-bg: #174e75;           /* Vibrant Sea Blue Card */
-            --accent-gold: #fbbf24;        /* Golden Yellow */
-            --accent-cyan: #22d3ee;        /* Bright Aqua Cyan */
+            --bg-sea: #0f3854;
+            --bg-header: #0a273c;
+            --card-bg: #174e75;
+            --accent-gold: #fbbf24;
+            --accent-cyan: #22d3ee;
             --text-light: #f8fafc;
             --text-muted: #93c5fd;
             --border-color: #2563eb;
@@ -32,7 +32,6 @@
             flex-direction: column;
         }
 
-        /* Header Navigation */
         header {
             background-color: var(--bg-header);
             padding: 1rem 1.5rem;
@@ -103,7 +102,6 @@
             background: #67e8f9;
         }
 
-        /* Slide Viewer Area */
         main {
             flex: 1;
             display: flex;
@@ -243,7 +241,6 @@
             border: 1px solid #3b82f6;
         }
 
-        /* Footer Nav Controls */
         footer {
             background-color: var(--bg-header);
             padding: 1rem 1.5rem;
@@ -274,7 +271,6 @@
             transition: width 0.3s ease;
         }
 
-        /* Print Mode for PDF Export */
         @media print {
             header, footer, .controls {
                 display: none !important;
@@ -331,12 +327,8 @@
 
     <main>
         <div class="slide-card">
-            <div class="image-container" id="imgBox">
-                <!-- Image renders directly here -->
-            </div>
-            <div class="text-container" id="textBox">
-                <!-- Slide text renders here -->
-            </div>
+            <div class="image-container" id="imgBox"></div>
+            <div class="text-container" id="textBox"></div>
         </div>
     </main>
 
@@ -467,45 +459,51 @@
         function renderSlide() {
             const slide = slides[currentSlide];
             
-            // Image Area
             const imgBox = document.getElementById('imgBox');
-            imgBox.innerHTML = `
-                <img src="${slide.defaultImg}" alt="${slide.title}" onerror="this.style.display='none'; document.getElementById('placeholder-${currentSlide}').style.display='flex';">
-                <div class="placeholder-box" id="placeholder-${currentSlide}" style="display:none;">
-                    <p style="font-size: 1.2rem; font-weight: bold; margin-bottom: 0.5rem; color: #ffffff;">📷 ${slide.title}</p>
-                    <p style="font-size: 0.85rem; color: var(--accent-cyan);">${slide.defaultImg} not found</p>
-                </div>
-            `;
+            if (imgBox) {
+                imgBox.innerHTML = `
+                    <img src="${slide.defaultImg}" alt="${slide.title}" onerror="this.style.display='none'; document.getElementById('placeholder-${currentSlide}').style.display='flex';">
+                    <div class="placeholder-box" id="placeholder-${currentSlide}" style="display:none;">
+                        <p style="font-size: 1.2rem; font-weight: bold; margin-bottom: 0.5rem; color: #ffffff;">📷 ${slide.title}</p>
+                        <p style="font-size: 0.85rem; color: var(--accent-cyan);">${slide.defaultImg} not found</p>
+                    </div>
+                `;
+            }
 
-            // Text Area
             const textBox = document.getElementById('textBox');
-            const bulletsHTML = slide.bullets.map((b, i) => `
-                <li>
-                    <span class="bullet">${i + 1}</span>
-                    <span>${b}</span>
-                </li>
-            `).join('');
+            if (textBox) {
+                const bulletsHTML = slide.bullets.map((b, i) => `
+                    <li>
+                        <span class="bullet">${i + 1}</span>
+                        <span>${b}</span>
+                    </li>
+                `).join('');
 
-            textBox.innerHTML = `
-                <div>
-                    <div class="slide-header">
-                        <span class="slide-tag">${slide.tag}</span>
-                        <h2 class="slide-title">${slide.title}</h2>
-                        <div class="slide-subtitle">${slide.subtitle}</div>
+                textBox.innerHTML = `
+                    <div>
+                        <div class="slide-header">
+                            <span class="slide-tag">${slide.tag}</span>
+                            <h2 class="slide-title">${slide.title}</h2>
+                            <div class="slide-subtitle">${slide.subtitle}</div>
+                        </div>
+                        <div class="content-box">
+                            ${slide.concept}
+                        </div>
+                        <ul class="points-list">
+                            ${bulletsHTML}
+                        </ul>
                     </div>
-                    <div class="content-box">
-                        ${slide.concept}
-                    </div>
-                    <ul class="points-list">
-                        ${bulletsHTML}
-                    </ul>
-                </div>
-            `;
+                `;
+            }
 
-            // UI updates
-            document.getElementById('slideSelect').value = currentSlide;
-            document.getElementById('slideCounter').innerText = `Slide ${currentSlide + 1} of ${slides.length}`;
-            document.getElementById('progressFill').style.width = `${((currentSlide + 1) / slides.length) * 100}%`;
+            const selectEl = document.getElementById('slideSelect');
+            if (selectEl) selectEl.value = currentSlide;
+
+            const counterEl = document.getElementById('slideCounter');
+            if (counterEl) counterEl.innerText = `Slide ${currentSlide + 1} of ${slides.length}`;
+
+            const fillEl = document.getElementById('progressFill');
+            if (fillEl) fillEl.style.width = `${((currentSlide + 1) / slides.length) * 100}%`;
         }
 
         function nextSlide() {
@@ -532,6 +530,7 @@
             if (e.key === 'ArrowLeft') prevSlide();
         });
 
+        window.addEventListener('DOMContentLoaded', renderSlide);
         renderSlide();
     </script>
 </body>
