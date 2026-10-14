@@ -103,21 +103,6 @@
             background: #67e8f9;
         }
 
-        .file-input-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-        }
-
-        .file-input-wrapper input[type=file] {
-            font-size: 100px;
-            position: absolute;
-            left: 0;
-            top: 0;
-            opacity: 0;
-            cursor: pointer;
-        }
-
         /* Slide Viewer Area */
         main {
             flex: 1;
@@ -291,7 +276,7 @@
 
         /* Print Mode for PDF Export */
         @media print {
-            header, footer, .controls, .file-input-wrapper {
+            header, footer, .controls {
                 display: none !important;
             }
             body {
@@ -329,10 +314,6 @@
             <h1>High School Students - Study Guide: Ultimate Habits</h1>
         </div>
         <div class="controls">
-            <div class="file-input-wrapper">
-                <button class="btn-accent">📁 Select Images</button>
-                <input type="file" id="imageUploader" multiple accept="image/*" onchange="handleImageUpload(event)">
-            </div>
             <select id="slideSelect" onchange="goToSlide(parseInt(this.value))">
                 <option value="0">Cover: Introduction</option>
                 <option value="1">Habit 1: Active Recall</option>
@@ -350,7 +331,7 @@
     <main>
         <div class="slide-card">
             <div class="image-container" id="imgBox">
-                <!-- Image or placeholder will render here -->
+                <!-- Image renders directly here -->
             </div>
             <div class="text-container" id="textBox">
                 <!-- Slide text renders here -->
@@ -440,7 +421,7 @@
                     "<strong>25 / 5 Rule:</strong> Work in 25-minute intense focus sprints followed by a strict 5-minute break.",
                     "<strong>50 / 10 Sprint:</strong> Use longer 50-minute blocks for essay writing followed by a 10-minute break."
                 ],
-                defaultImg: "habit6.jpg"
+                defaultImg: "habit5.jpg"
             },
             {
                 tag: "Habit #6",
@@ -469,21 +450,17 @@
         ];
 
         let currentSlide = 0;
-        let customImages = {};
 
         function renderSlide() {
             const slide = slides[currentSlide];
             
             // Image Area
             const imgBox = document.getElementById('imgBox');
-            const imgSrc = customImages[currentSlide] || slide.defaultImg;
-            
             imgBox.innerHTML = `
-                <img src="${imgSrc}" alt="${slide.title}" onerror="this.style.display='none'; document.getElementById('placeholder-${currentSlide}').style.display='flex';">
+                <img src="${slide.defaultImg}" alt="${slide.title}" onerror="this.style.display='none'; document.getElementById('placeholder-${currentSlide}').style.display='flex';">
                 <div class="placeholder-box" id="placeholder-${currentSlide}" style="display:none;">
-                    <p style="font-size: 1.2rem; font-weight: bold; margin-bottom: 0.5rem; color: #ffffff;">📷 Cartoon Slide ${currentSlide + 1}</p>
-                    <p style="font-size: 0.85rem; margin-bottom: 1rem; color: var(--accent-cyan);">${slide.title}</p>
-                    <p style="font-size: 0.8rem; color: var(--accent-gold);">Click '📁 Select Images' at the top to select your saved image files!</p>
+                    <p style="font-size: 1.2rem; font-weight: bold; margin-bottom: 0.5rem; color: #ffffff;">📷 ${slide.title}</p>
+                    <p style="font-size: 0.85rem; color: var(--accent-cyan);">${slide.defaultImg} not found</p>
                 </div>
             `;
 
@@ -534,33 +511,6 @@
 
         function goToSlide(index) {
             currentSlide = index;
-            renderSlide();
-        }
-
-        function handleImageUpload(event) {
-            const files = event.target.files;
-            if (!files || files.length === 0) return;
-
-            Array.from(files).forEach((file) => {
-                const url = URL.createObjectURL(file);
-                const name = file.name.toLowerCase();
-
-                if (name.includes('cover')) customImages[0] = url;
-                else if (name.includes('1') || name.includes('recall')) customImages[1] = url;
-                else if (name.includes('2') || name.includes('triage')) customImages[2] = url;
-                else if (name.includes('3') || name.includes('friction') || name.includes('phone')) customImages[3] = url;
-                else if (name.includes('4') || name.includes('feynman') || name.includes('cat')) customImages[4] = url;
-                else if (name.includes('5') || name.includes('boxing') || name.includes('pomodoro')) customImages[5] = url;
-                else if (name.includes('6') || name.includes('simul') || name.includes('mock')) customImages[6] = url;
-                else if (name.includes('7') || name.includes('sleep') || name.includes('sonno')) customImages[7] = url;
-            });
-
-            if (Object.keys(customImages).length === 0) {
-                Array.from(files).forEach((file, index) => {
-                    if (index < slides.length) customImages[index] = URL.createObjectURL(file);
-                });
-            }
-
             renderSlide();
         }
 
