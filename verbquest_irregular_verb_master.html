@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VerbQuest: Irregular Verb Master</title>
+  <title>VerbQuest: Irregular Verb Master | Mrs. Torresi's Class</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -36,7 +36,7 @@
   </script>
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Custom CSS for 3D Card Flip & Polish -->
+  
   <style>
     /* 3D Card Flip Styles */
     .perspective-1000 {
@@ -90,19 +90,35 @@
   <!-- Confetti Canvas -->
   <canvas id="confetti-canvas"></canvas>
 
+  <!-- Notification Toast -->
+  <div id="toast-notification" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none bg-slate-900 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center space-x-3 border border-slate-700">
+    <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+    <span id="toast-message" class="text-xs sm:text-sm font-semibold">Notification message</span>
+  </div>
+
   <!-- Navigation Header -->
   <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         
         <!-- Logo & Title -->
-        <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('flashcards')">
-          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 transform hover:scale-105 transition">
-            <i class="fa-solid font-bold fa-wand-magic-sparkles text-lg"></i>
-          </div>
-          <div>
-            <span class="text-xl font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent tracking-tight">VerbQuest</span>
-            <span class="hidden sm:inline-block ml-2 text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300">Irregular Master</span>
+        <div class="flex items-center space-x-3">
+          <!-- Back to Hub Button -->
+          <a href="index.html" class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-slate-700 transition flex items-center justify-center mr-1 shadow-sm" title="Back to Class Hub">
+            <i class="fa-solid fa-arrow-left text-sm"></i>
+          </a>
+
+          <div class="flex items-center space-x-2.5 cursor-pointer" onclick="switchTab('flashcards')">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-purple-600 to-pink-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 transform hover:scale-105 transition">
+              <i class="fa-solid font-bold fa-wand-magic-sparkles text-lg"></i>
+            </div>
+            <div>
+              <div class="flex items-center space-x-2">
+                <span class="text-xl font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-500 bg-clip-text text-transparent tracking-tight">VerbQuest</span>
+                <span class="hidden sm:inline-block text-[11px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-950/80 text-indigo-700 dark:text-indigo-300">Irregular Master</span>
+              </div>
+              <p class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold leading-none hidden md:block">Created for Mrs. Nives Torresi's Classes</p>
+            </div>
           </div>
         </div>
 
@@ -122,16 +138,49 @@
           </div>
         </div>
 
-        <!-- Utility Buttons (Sound FX, Speech Speed, Dark Mode) -->
+        <!-- Header Action Buttons -->
         <div class="flex items-center space-x-2">
+          <!-- Claim Certificate Button -->
+          <button onclick="openCertificateModal()" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-500 hover:to-amber-600 text-slate-950 font-black text-xs shadow-md shadow-amber-500/20 transition transform hover:scale-105 flex items-center space-x-1.5">
+            <i class="fa-solid fa-award text-sm"></i>
+            <span class="hidden sm:inline">Certificate</span>
+          </button>
+
+          <!-- Export Progress Dropdown Button -->
+          <div class="relative group">
+            <button class="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-xs transition flex items-center space-x-1.5">
+              <i class="fa-solid fa-download text-indigo-500"></i>
+              <span class="hidden lg:inline">Report</span>
+              <i class="fa-solid fa-chevron-down text-[10px]"></i>
+            </button>
+            <div class="absolute right-0 mt-1 w-52 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl py-2 hidden group-hover:block z-50">
+              <button onclick="exportProgressReportTXT()" class="w-full text-left px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-800 flex items-center space-x-2">
+                <i class="fa-solid fa-file-lines text-purple-500"></i>
+                <span>Download Report Card (.TXT)</span>
+              </button>
+              <button onclick="exportProgressJSON()" class="w-full text-left px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-800 flex items-center space-x-2">
+                <i class="fa-solid fa-file-code text-indigo-500"></i>
+                <span>Backup Progress (.JSON)</span>
+              </button>
+              <label class="w-full text-left px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-800 flex items-center space-x-2 cursor-pointer">
+                <i class="fa-solid fa-file-import text-emerald-500"></i>
+                <span>Load Saved Progress</span>
+                <input type="file" id="import-json-input" accept=".json" onchange="importProgressJSON(event)" class="hidden">
+              </label>
+            </div>
+          </div>
+
+          <!-- Sound FX Toggle -->
           <button id="btn-sound-toggle" onclick="toggleSound()" class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition" title="Toggle Sound FX">
             <i class="fa-solid fa-volume-high text-base"></i>
           </button>
           
+          <!-- Speech Speed -->
           <button id="btn-speech-speed" onclick="toggleSpeechSpeed()" class="px-2.5 py-1 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-slate-700 transition" title="Speech Audio Speed">
             <i class="fa-solid fa-gauge-high mr-1 text-indigo-500"></i><span id="speech-speed-text">1.0x</span>
           </button>
 
+          <!-- Dark Mode Toggle -->
           <button onclick="toggleDarkMode()" class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition" title="Toggle Dark/Light Mode">
             <i class="fa-solid fa-moon text-base dark:hidden"></i>
             <i class="fa-solid fa-sun text-base hidden dark:inline-block text-amber-400"></i>
@@ -142,29 +191,34 @@
 
       <!-- Navigation Tabs Bar -->
       <div class="flex space-x-1 overflow-x-auto pb-2 scrollbar-none border-t border-slate-100 dark:border-slate-800/60 pt-2">
-        <button id="tab-btn-flashcards" onclick="switchTab('flashcards')" class="tab-btn active px-4 py-2 rounded-xl font-bold text-sm flex items-center space-x-2 whitespace-nowrap transition">
+        <button id="tab-btn-flashcards" onclick="switchTab('flashcards')" class="tab-btn active px-4 py-2 rounded-xl font-bold text-sm flex items-center space-x-2 whitespace-nowrap transition bg-indigo-600 text-white shadow-md">
           <i class="fa-solid fa-layer-group"></i>
           <span>Flashcards</span>
         </button>
 
-        <button id="tab-btn-matching" onclick="switchTab('matching')" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm flex items-center space-x-2 whitespace-nowrap transition">
-          <i class="fa-solid fa-[#000] fa-puzzle-piece"></i>
+        <button id="tab-btn-matching" onclick="switchTab('matching')" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm flex items-center space-x-2 whitespace-nowrap transition text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <i class="fa-solid fa-puzzle-piece"></i>
           <span>Matching Game</span>
         </button>
 
-        <button id="tab-btn-quiz" onclick="switchTab('quiz')" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm flex items-center space-x-2 whitespace-nowrap transition">
+        <button id="tab-btn-quiz" onclick="switchTab('quiz')" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm flex items-center space-x-2 whitespace-nowrap transition text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
           <i class="fa-solid fa-pen-to-square"></i>
           <span>Sentence Quiz</span>
         </button>
 
-        <button id="tab-btn-speed" onclick="switchTab('speed')" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm flex items-center space-x-2 whitespace-nowrap transition">
+        <button id="tab-btn-speed" onclick="switchTab('speed')" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm flex items-center space-x-2 whitespace-nowrap transition text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
           <i class="fa-solid fa-bolt text-amber-400"></i>
           <span>Speed Arcade</span>
         </button>
 
-        <button id="tab-btn-vault" onclick="switchTab('vault')" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm flex items-center space-x-2 whitespace-nowrap transition">
+        <button id="tab-btn-vault" onclick="switchTab('vault')" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm flex items-center space-x-2 whitespace-nowrap transition text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800">
           <i class="fa-solid fa-book-bookmark"></i>
           <span>Verb Vault & Stats</span>
+        </button>
+
+        <button id="tab-btn-teacher" onclick="switchTab('teacher')" class="tab-btn px-4 py-2 rounded-xl font-bold text-sm flex items-center space-x-2 whitespace-nowrap transition text-rose-600 dark:text-rose-400 hover:bg-slate-100 dark:hover:bg-slate-800">
+          <i class="fa-solid fa-user-graduate text-rose-500"></i>
+          <span>About Mrs. Torresi</span>
         </button>
       </div>
 
@@ -178,7 +232,6 @@
     <section id="tab-view-flashcards" class="space-y-6">
       <!-- Filter Bar -->
       <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-200/80 dark:border-slate-800 flex flex-wrap gap-3 items-center justify-between">
-        
         <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
           <!-- Level Filter -->
           <div class="flex items-center space-x-2">
@@ -215,8 +268,6 @@
 
       <!-- Flashcard Arena Container -->
       <div class="flex flex-col items-center justify-center min-h-[420px] relative">
-        
-        <!-- Flashcard Flip Deck -->
         <div id="flashcard-wrapper" class="w-full max-w-lg perspective-1000 cursor-pointer" onclick="flipCurrentCard()">
           <div id="flashcard-card" class="transform-style-3d relative w-full h-[360px] rounded-3xl shadow-xl transition-transform duration-500">
             
@@ -257,8 +308,6 @@
 
             <!-- BACK SIDE -->
             <div class="backface-hidden rotate-y-180 absolute inset-0 bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 flex flex-col justify-between text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
-              
-              <!-- Back Header -->
               <div class="flex items-center justify-between">
                 <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400" id="fc-back-pattern">Pattern Breakdown</span>
                 <button onclick="event.stopPropagation(); toggleMastery(currentCardVerb.base)" id="btn-master-card" class="text-xs font-bold px-3 py-1 rounded-full border border-amber-300 bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-300 hover:bg-amber-100 transition flex items-center space-x-1">
@@ -269,7 +318,6 @@
 
               <!-- 3 Forms Grid -->
               <div class="grid grid-cols-3 gap-2 my-auto bg-slate-50 dark:bg-slate-800/60 p-3.5 rounded-2xl border border-slate-100 dark:border-slate-700/60 text-center">
-                <!-- V1 -->
                 <div class="space-y-1">
                   <span class="text-[10px] font-bold uppercase text-slate-400">V1 (Base)</span>
                   <div class="font-bold text-lg text-slate-800 dark:text-slate-100 flex items-center justify-center space-x-1">
@@ -277,1463 +325,6 @@
                     <button onclick="event.stopPropagation(); speakText(currentCardVerb.base)" class="text-xs text-indigo-500 hover:text-indigo-600"><i class="fa-solid fa-volume-high"></i></button>
                   </div>
                 </div>
-                <!-- V2 -->
                 <div class="space-y-1 border-x border-slate-200 dark:border-slate-700 px-1">
                   <span class="text-[10px] font-bold uppercase text-indigo-500">V2 (Past)</span>
-                  <div class="font-black text-lg text-indigo-600 dark:text-indigo-400 flex items-center justify-center space-x-1">
-                    <span id="fc-back-v2">wrote</span>
-                    <button onclick="event.stopPropagation(); speakText(currentCardVerb.past)" class="text-xs text-indigo-500 hover:text-indigo-600"><i class="fa-solid fa-volume-high"></i></button>
-                  </div>
-                </div>
-                <!-- V3 -->
-                <div class="space-y-1">
-                  <span class="text-[10px] font-bold uppercase text-purple-500">V3 (Participle)</span>
-                  <div class="font-black text-lg text-purple-600 dark:text-purple-400 flex items-center justify-center space-x-1">
-                    <span id="fc-back-v3">written</span>
-                    <button onclick="event.stopPropagation(); speakText(currentCardVerb.participle)" class="text-xs text-purple-500 hover:text-purple-600"><i class="fa-solid fa-volume-high"></i></button>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Example Sentence & Mnemonic -->
-              <div class="space-y-3">
-                <div class="bg-indigo-50/70 dark:bg-indigo-950/30 p-3 rounded-xl border border-indigo-100 dark:border-indigo-900/40 relative">
-                  <div class="flex items-start justify-between">
-                    <p class="text-xs font-medium text-indigo-950 dark:text-indigo-200 italic leading-relaxed" id="fc-back-sentence">
-                      "She wrote a long letter to her best friend."
-                    </p>
-                    <button onclick="event.stopPropagation(); speakText(currentCardVerb.sentence)" class="ml-2 text-indigo-600 dark:text-indigo-400 hover:scale-110 transition shrink-0" title="Listen Sentence">
-                      <i class="fa-solid fa-circle-play text-lg"></i>
-                    </button>
-                  </div>
-                </div>
-
-                <div class="flex items-center space-x-2 text-xs text-slate-500 dark:text-slate-400">
-                  <i class="fa-solid fa-lightbulb text-amber-500"></i>
-                  <span id="fc-back-mnemonic" class="truncate">Tip: Double -t in written!</span>
-                </div>
-              </div>
-
-              <div class="text-center text-xs font-semibold text-slate-400 pt-2">
-                Click to flip back
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- Carousel Navigation Controls -->
-        <div class="flex items-center justify-between w-full max-w-lg mt-6 px-2">
-          <button onclick="prevCard()" class="px-4 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 font-bold text-xs hover:bg-slate-100 dark:hover:bg-slate-700 transition flex items-center space-x-2 shadow-sm">
-            <i class="fa-solid fa-arrow-left"></i> <span>Previous</span>
-          </button>
-
-          <div class="flex items-center space-x-3">
-            <span class="text-xs font-extrabold text-slate-500 dark:text-slate-400" id="fc-card-counter">Card 1 of 50</span>
-            <button onclick="shuffleDeck()" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition flex items-center justify-center" title="Shuffle Deck">
-              <i class="fa-solid fa-shuffle text-xs"></i>
-            </button>
-            <button id="btn-autoplay" onclick="toggleAutoplay()" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 transition flex items-center justify-center" title="Autoplay Slideshow">
-              <i class="fa-solid fa-play text-xs" id="icon-autoplay"></i>
-            </button>
-          </div>
-
-          <button onclick="nextCard()" class="px-4 py-2 rounded-xl bg-indigo-600 text-white font-bold text-xs hover:bg-indigo-700 transition flex items-center space-x-2 shadow-md shadow-indigo-500/20">
-            <span>Next</span> <i class="fa-solid fa-arrow-right"></i>
-          </button>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- TAB 2: MATCHING GAME MODE -->
-    <section id="tab-view-matching" class="hidden space-y-6">
-      <!-- Game Settings Header -->
-      <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200/80 dark:border-slate-800 flex flex-wrap items-center justify-between gap-4">
-        
-        <div class="flex flex-wrap items-center gap-3">
-          <!-- Target Match Type -->
-          <div class="flex items-center space-x-2">
-            <span class="text-xs font-bold uppercase text-slate-400">Match:</span>
-            <select id="match-target-type" onchange="initMatchingGame()" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
-              <option value="base-past">Base ↔ Past Simple (V1 ↔ V2)</option>
-              <option value="base-participle">Base ↔ Past Participle (V1 ↔ V3)</option>
-              <option value="past-participle">Past Simple ↔ Past Participle (V2 ↔ V3)</option>
-            </select>
-          </div>
-
-          <!-- Difficulty Grid -->
-          <div class="flex items-center space-x-2">
-            <span class="text-xs font-bold uppercase text-slate-400">Grid:</span>
-            <select id="match-grid-size" onchange="initMatchingGame()" class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-1.5 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500">
-              <option value="6">Easy (6 Pairs)</option>
-              <option value="8" selected>Medium (8 Pairs)</option>
-              <option value="12">Hard (12 Pairs)</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Live Game Stats -->
-        <div class="flex items-center space-x-6 text-xs font-extrabold">
-          <div>
-            <span class="text-slate-400 block text-[10px] uppercase">Moves</span>
-            <span class="text-base text-slate-800 dark:text-slate-100" id="match-moves-count">0</span>
-          </div>
-          <div>
-            <span class="text-slate-400 block text-[10px] uppercase">Time</span>
-            <span class="text-base text-indigo-600 dark:text-indigo-400" id="match-timer">00:00</span>
-          </div>
-          <div>
-            <span class="text-slate-400 block text-[10px] uppercase">Pairs Left</span>
-            <span class="text-base text-pink-500" id="match-pairs-left">8</span>
-          </div>
-          <button onclick="initMatchingGame()" class="px-3.5 py-1.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 font-bold hover:bg-indigo-100 transition flex items-center space-x-1.5">
-            <i class="fa-solid fa-arrows-rotate text-xs"></i> <span>Restart</span>
-          </button>
-        </div>
-
-      </div>
-
-      <!-- Tile Grid Arena -->
-      <div id="matching-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-4xl mx-auto min-h-[350px]">
-        <!-- Dynamic Tiles Inserted by JS -->
-      </div>
-    </section>
-
-    <!-- TAB 3: SENTENCE QUIZ MODE -->
-    <section id="tab-view-quiz" class="hidden space-y-6">
-      <div class="max-w-3xl mx-auto space-y-6">
-        
-        <!-- Quiz Control Bar -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-slate-200/80 dark:border-slate-800 flex items-center justify-between">
-          <div class="flex items-center space-x-3">
-            <span class="text-xs font-bold px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300" id="quiz-question-num">Question 1</span>
-            <span class="text-xs font-bold text-slate-400" id="quiz-pattern-badge">Pattern: Vowel Swap</span>
-          </div>
-          
-          <div class="flex items-center space-x-2">
-            <button id="quiz-mode-toggle" onclick="toggleQuizMode()" class="text-xs font-bold px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-200 transition">
-              <i class="fa-solid fa-sliders mr-1"></i> Switch to Multiple Choice
-            </button>
-          </div>
-        </div>
-
-        <!-- Quiz Card Arena -->
-        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200/80 dark:border-slate-800 space-y-6 relative overflow-hidden">
-          
-          <!-- Verb Prompt Badge -->
-          <div class="flex items-center justify-between">
-            <div class="space-y-1">
-              <span class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Target Tense & Base Verb</span>
-              <h3 class="text-xl font-black text-indigo-600 dark:text-indigo-400 flex items-center space-x-2">
-                <span id="quiz-target-verb">DRINK</span>
-                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300" id="quiz-target-tense">Past Simple (V2)</span>
-              </h3>
-            </div>
-            
-            <button onclick="speakQuizSentence()" class="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 transition flex items-center justify-center" title="Listen Sentence">
-              <i class="fa-solid fa-volume-high text-lg"></i>
-            </button>
-          </div>
-
-          <!-- Sentence Prompt Box -->
-          <div class="bg-slate-50 dark:bg-slate-800/60 p-6 rounded-2xl border border-slate-200/60 dark:border-slate-700/60">
-            <p id="quiz-sentence-display" class="text-lg sm:text-xl font-semibold leading-relaxed text-slate-800 dark:text-slate-100">
-              Yesterday, he <span class="px-3 py-1 rounded-xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 font-bold underline decoration-2 underline-offset-4">______</span> three glasses of cold water.
-            </p>
-          </div>
-
-          <!-- Fill-In Answer Section -->
-          <div id="quiz-input-area" class="space-y-4">
-            <!-- Text Input Mode -->
-            <div id="quiz-mode-text" class="flex flex-col sm:flex-row gap-3">
-              <input type="text" id="quiz-answer-input" placeholder="Type past verb form here..." onkeydown="if(event.key==='Enter') submitQuizAnswer()" class="flex-1 px-4 py-3 bg-slate-50 dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 rounded-2xl font-bold text-base focus:outline-none focus:border-indigo-500 transition">
-              <button onclick="submitQuizAnswer()" class="px-6 py-3 bg-indigo-600 text-white font-extrabold rounded-2xl hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/20 flex items-center justify-center space-x-2">
-                <span>Check</span> <i class="fa-solid fa-paper-plane"></i>
-              </button>
-            </div>
-
-            <!-- Multiple Choice Options Grid (Hidden by default) -->
-            <div id="quiz-mode-choice" class="hidden grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <!-- Choices generated via JS -->
-            </div>
-          </div>
-
-          <!-- Hint & Feedback Area -->
-          <div id="quiz-feedback-box" class="hidden rounded-2xl p-5 border transition-all duration-300 space-y-2">
-            <div class="flex items-center space-x-2 font-black text-base" id="quiz-feedback-title">
-              <!-- Dynamic Icon & Title -->
-            </div>
-            <p class="text-xs sm:text-sm font-medium leading-relaxed" id="quiz-feedback-explanation">
-              <!-- Rule breakdown -->
-            </p>
-          </div>
-
-          <!-- Footer Actions -->
-          <div class="flex items-center justify-between pt-2">
-            <button onclick="showQuizHint()" id="btn-quiz-hint" class="text-xs font-bold text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition flex items-center space-x-1.5">
-              <i class="fa-solid fa-lightbulb text-amber-500"></i>
-              <span id="quiz-hint-text">Need a Hint?</span>
-            </button>
-
-            <button onclick="nextQuizQuestion()" id="btn-quiz-next" class="hidden px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-extrabold text-xs hover:opacity-90 transition shadow-md flex items-center space-x-2">
-              <span>Next Question</span> <i class="fa-solid fa-chevron-right"></i>
-            </button>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 4: SPEED ARCADE MODE -->
-    <section id="tab-view-speed" class="hidden space-y-6">
-      <div class="max-w-2xl mx-auto">
-        
-        <!-- Arcade Container Card -->
-        <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-800 relative overflow-hidden space-y-6">
-          
-          <!-- Arcade Glow BG -->
-          <div class="absolute -top-24 -right-24 w-64 h-64 bg-indigo-600/20 rounded-full blur-3xl pointer-events-none"></div>
-          <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-pink-600/20 rounded-full blur-3xl pointer-events-none"></div>
-
-          <!-- START / OVERLAY SCREEN -->
-          <div id="arcade-start-screen" class="text-center py-8 space-y-6">
-            <div class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-amber-400 to-pink-500 flex items-center justify-center text-slate-950 text-3xl font-black shadow-lg shadow-pink-500/30 animate-pulse-glow">
-              <i class="fa-solid fa-bolt"></i>
-            </div>
-            <div class="space-y-2">
-              <h2 class="text-3xl font-black tracking-tight">Speed Challenge</h2>
-              <p class="text-xs sm:text-sm text-slate-400 max-w-md mx-auto">
-                Answer as many irregular verb questions as you can before time runs out! Streak correct answers to multiply your score.
-              </p>
-            </div>
-            
-            <div class="flex items-center justify-center space-x-6 text-xs font-bold text-slate-300 py-2">
-              <div class="flex items-center space-x-2">
-                <i class="fa-solid fa-stopwatch text-indigo-400 text-base"></i>
-                <span>60 Seconds</span>
-              </div>
-              <div class="flex items-center space-x-2">
-                <i class="fa-solid fa-heart text-rose-500 text-base"></i>
-                <span>3 Lives</span>
-              </div>
-              <div class="flex items-center space-x-2">
-                <i class="fa-solid fa-trophy text-amber-400 text-base"></i>
-                <span id="speed-high-score-display">High Score: 0</span>
-              </div>
-            </div>
-
-            <button onclick="startSpeedArcade()" class="px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-400 via-pink-500 to-purple-600 text-slate-950 font-black text-base hover:opacity-95 transition transform hover:scale-105 shadow-xl shadow-pink-500/20">
-              <i class="fa-solid fa-play mr-2"></i> START SPEED GAME
-            </button>
-          </div>
-
-          <!-- ACTIVE GAME SCREEN -->
-          <div id="arcade-game-screen" class="hidden space-y-6">
-            
-            <!-- Header HUD -->
-            <div class="flex items-center justify-between text-xs font-black">
-              <div class="flex items-center space-x-1.5 text-rose-500" id="arcade-lives-container">
-                <i class="fa-solid fa-heart text-base"></i>
-                <i class="fa-solid fa-heart text-base"></i>
-                <i class="fa-solid fa-heart text-base"></i>
-              </div>
-
-              <div class="flex items-center space-x-2 bg-slate-800/80 px-3 py-1 rounded-xl border border-slate-700">
-                <span class="text-slate-400">SCORE:</span>
-                <span class="text-amber-400 text-sm font-black" id="arcade-score">0</span>
-              </div>
-
-              <div class="flex items-center space-x-1 text-purple-400">
-                <i class="fa-solid fa-fire text-amber-400"></i>
-                <span id="arcade-multiplier">1x MULTIPLIER</span>
-              </div>
-            </div>
-
-            <!-- Timer Countdown Bar -->
-            <div class="space-y-1">
-              <div class="flex justify-between text-[10px] font-bold text-slate-400">
-                <span>TIME REMAINING</span>
-                <span id="arcade-timer-text">60s</span>
-              </div>
-              <div class="w-full h-3 bg-slate-800 rounded-full overflow-hidden p-0.5 border border-slate-700">
-                <div id="arcade-timer-bar" class="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full transition-all duration-200" style="width: 100%"></div>
-              </div>
-            </div>
-
-            <!-- Question Box -->
-            <div class="bg-slate-800/90 rounded-2xl p-6 text-center border border-slate-700 space-y-2">
-              <span id="arcade-tense-prompt" class="text-xs font-bold uppercase tracking-widest text-indigo-400">WHAT IS THE PAST SIMPLE FORM OF?</span>
-              <h2 id="arcade-prompt-verb" class="text-4xl font-black text-white tracking-tight">WRITE</h2>
-            </div>
-
-            <!-- 4 Multiple Choice Buttons -->
-            <div id="arcade-options-grid" class="grid grid-cols-2 gap-3">
-              <!-- Choices dynamically inserted via JS -->
-            </div>
-
-          </div>
-
-          <!-- GAME OVER SUMMARY SCREEN -->
-          <div id="arcade-over-screen" class="hidden text-center py-6 space-y-6">
-            <div class="w-16 h-16 mx-auto rounded-full bg-slate-800 flex items-center justify-center text-amber-400 text-2xl font-black border border-slate-700">
-              <i class="fa-solid fa-flag-checkered"></i>
-            </div>
-            
-            <div class="space-y-1">
-              <h3 class="text-2xl font-black">Game Over!</h3>
-              <p class="text-xs text-slate-400">Great effort! Here is your performance summary:</p>
-            </div>
-
-            <div class="grid grid-cols-3 gap-3 bg-slate-800/60 p-4 rounded-2xl border border-slate-700">
-              <div>
-                <span class="text-[10px] text-slate-400 block font-bold">FINAL SCORE</span>
-                <span class="text-xl font-black text-amber-400" id="arcade-final-score">0</span>
-              </div>
-              <div>
-                <span class="text-[10px] text-slate-400 block font-bold">MAX STREAK</span>
-                <span class="text-xl font-black text-pink-400" id="arcade-final-streak">0</span>
-              </div>
-              <div>
-                <span class="text-[10px] text-slate-400 block font-bold">ACCURACY</span>
-                <span class="text-xl font-black text-emerald-400" id="arcade-final-accuracy">0%</span>
-              </div>
-            </div>
-
-            <button onclick="startSpeedArcade()" class="px-6 py-3 rounded-2xl bg-indigo-600 text-white font-black text-sm hover:bg-indigo-500 transition shadow-lg">
-              <i class="fa-solid fa-rotate-right mr-1"></i> PLAY AGAIN
-            </button>
-          </div>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- TAB 5: VERB VAULT & USER STATS -->
-    <section id="tab-view-vault" class="hidden space-y-8">
-      
-      <!-- Stats Summary Dashboard -->
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        
-        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200/80 dark:border-slate-800 flex items-center space-x-4">
-          <div class="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl font-bold shrink-0">
-            <i class="fa-solid fa-circle-check"></i>
-          </div>
-          <div>
-            <span class="text-xs font-bold text-slate-400 uppercase">Mastered Verbs</span>
-            <div class="text-2xl font-black text-slate-800 dark:text-slate-100" id="stat-mastered-count">0 / 65</div>
-          </div>
-        </div>
-
-        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200/80 dark:border-slate-800 flex items-center space-x-4">
-          <div class="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400 flex items-center justify-center text-xl font-bold shrink-0">
-            <i class="fa-solid fa-[#000] fa-bullseye"></i>
-          </div>
-          <div>
-            <span class="text-xs font-bold text-slate-400 uppercase">Overall Accuracy</span>
-            <div class="text-2xl font-black text-slate-800 dark:text-slate-100" id="stat-accuracy">0%</div>
-          </div>
-        </div>
-
-        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200/80 dark:border-slate-800 flex items-center space-x-4">
-          <div class="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center text-xl font-bold shrink-0">
-            <i class="fa-solid fa-fire"></i>
-          </div>
-          <div>
-            <span class="text-xs font-bold text-slate-400 uppercase">Best Streak</span>
-            <div class="text-2xl font-black text-slate-800 dark:text-slate-100" id="stat-best-streak">0</div>
-          </div>
-        </div>
-
-        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 shadow-sm border border-slate-200/80 dark:border-slate-800 flex items-center space-x-4">
-          <div class="w-12 h-12 rounded-2xl bg-pink-100 dark:bg-pink-950 text-pink-600 dark:text-pink-400 flex items-center justify-center text-xl font-bold shrink-0">
-            <i class="fa-solid fa-award"></i>
-          </div>
-          <div>
-            <span class="text-xs font-bold text-slate-400 uppercase">Badges Unlocked</span>
-            <div class="text-2xl font-black text-slate-800 dark:text-slate-100" id="stat-badges-count">0 / 8</div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- Badges Showcase Section -->
-      <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-200/80 dark:border-slate-800 space-y-4">
-        <h3 class="text-base font-black text-slate-800 dark:text-slate-100 flex items-center space-x-2">
-          <i class="fa-solid fa-trophy text-amber-500"></i>
-          <span>Achievement Badges</span>
-        </h3>
-        <div id="badges-grid" class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <!-- Badges dynamically rendered -->
-        </div>
-      </div>
-
-      <!-- Verb Dictionary & Master List -->
-      <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-200/80 dark:border-slate-800 space-y-4">
-        
-        <div class="flex flex-wrap items-center justify-between gap-3">
-          <h3 class="text-base font-black text-slate-800 dark:text-slate-100 flex items-center space-x-2">
-            <i class="fa-solid fa-book-open text-indigo-500"></i>
-            <span>Irregular Verb Dictionary</span>
-          </h3>
-
-          <div class="flex items-center space-x-3 w-full sm:w-auto">
-            <input type="text" id="vault-search-input" oninput="renderVerbVaultTable()" placeholder="Search verb forms..." class="px-3.5 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full sm:w-48">
-          </div>
-        </div>
-
-        <!-- Scrollable Table -->
-        <div class="overflow-x-auto rounded-2xl border border-slate-200 dark:border-slate-800">
-          <table class="w-full text-left text-xs">
-            <thead class="bg-slate-50 dark:bg-slate-800/80 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
-              <tr>
-                <th class="p-3">Base (V1)</th>
-                <th class="p-3">Past Simple (V2)</th>
-                <th class="p-3">Past Participle (V3)</th>
-                <th class="p-3">Pattern Category</th>
-                <th class="p-3">Level</th>
-                <th class="p-3 text-center">Mastery</th>
-                <th class="p-3 text-center">Audio</th>
-              </tr>
-            </thead>
-            <tbody id="vault-table-body" class="divide-y divide-slate-100 dark:divide-slate-800/60 font-medium">
-              <!-- Rows dynamically inserted -->
-            </tbody>
-          </table>
-        </div>
-
-      </div>
-
-    </section>
-
-  </main>
-
-  <!-- Global Application Logic Script -->
-  <script>
-    /* ==========================================================================
-       1. DATABASE OF 65 IRREGULAR VERBS
-       ========================================================================== */
-    const VERBS_DATABASE = [
-      // All Three Same
-      { base: 'cut', past: 'cut', participle: 'cut', pattern: 'All Three Same', level: 'Beginner', sentence: 'I cut the paper with scissors yesterday.', mnemonic: 'V1, V2, and V3 forms never change!' },
-      { base: 'hit', past: 'hit', participle: 'hit', pattern: 'All Three Same', level: 'Beginner', sentence: 'He hit the baseball right over the fence.', mnemonic: 'Short 1-syllable verbs ending in -t stay the same.' },
-      { base: 'put', past: 'put', participle: 'put', pattern: 'All Three Same', level: 'Beginner', sentence: 'She put her backpack on the table.', mnemonic: 'Always stays "put" in every tense!' },
-      { base: 'cost', past: 'cost', participle: 'cost', pattern: 'All Three Same', level: 'Beginner', sentence: 'The ticket cost twenty dollars last week.', mnemonic: 'No change across past, present, or participle.' },
-      { base: 'let', past: 'let', participle: 'let', pattern: 'All Three Same', level: 'Beginner', sentence: 'They let us play in the garden.', mnemonic: 'Let stays let, simple and quick!' },
-      { base: 'set', past: 'set', participle: 'set', pattern: 'All Three Same', level: 'Beginner', sentence: 'We set the table before dinner.', mnemonic: 'Set never changes its vowels.' },
-      { base: 'read', past: 'read', participle: 'read', pattern: 'All Three Same', level: 'Beginner', sentence: 'She read three novels last month.', mnemonic: 'Spelled same, past pronounced like "red"!' },
-      { base: 'hurt', past: 'hurt', participle: 'hurt', pattern: 'All Three Same', level: 'Beginner', sentence: 'My ankle hurt after the long hike.', mnemonic: 'Hurt stays hurt in all three columns.' },
-      { base: 'shut', past: 'shut', participle: 'shut', pattern: 'All Three Same', level: 'Beginner', sentence: 'He shut the door to block out noise.', mnemonic: 'Shut remains unchanged everywhere.' },
-      { base: 'quit', past: 'quit', participle: 'quit', pattern: 'All Three Same', level: 'Intermediate', sentence: 'She quit sugar for a whole month.', mnemonic: 'Quit stays quit in standard English.' },
-
-      // Past = Participle (A-B-B)
-      { base: 'buy', past: 'bought', participle: 'bought', pattern: 'Past = Participle (A-B-B)', level: 'Beginner', sentence: 'I bought a new computer yesterday.', mnemonic: 'Notice -ought ending: buy -> bought!' },
-      { base: 'bring', past: 'brought', participle: 'brought', pattern: 'Past = Participle (A-B-B)', level: 'Beginner', sentence: 'She brought home-made cookies to class.', mnemonic: 'Rhymes with bought: bring -> brought.' },
-      { base: 'think', past: 'thought', participle: 'thought', pattern: 'Past = Participle (A-B-B)', level: 'Beginner', sentence: 'He thought about the solution all night.', mnemonic: 'Think transforms to thought.' },
-      { base: 'teach', past: 'taught', participle: 'taught', pattern: 'Past = Participle (A-B-B)', level: 'Beginner', sentence: 'Mr. Davis taught science for twenty years.', mnemonic: 'Teach uses -aught: taught.' },
-      { base: 'catch', past: 'caught', participle: 'caught', pattern: 'Past = Participle (A-B-B)', level: 'Beginner', sentence: 'The goalkeeper caught the soccer ball.', mnemonic: 'Catch uses -aught: caught.' },
-      { base: 'fight', past: 'fought', participle: 'fought', pattern: 'Past = Participle (A-B-B)', level: 'Intermediate', sentence: 'The soldiers fought bravely.', mnemonic: 'Fight transforms into fought.' },
-      { base: 'build', past: 'built', participle: 'built', pattern: 'Past = Participle (A-B-B)', level: 'Beginner', sentence: 'They built a grand castle on the hill.', mnemonic: 'Final -d shifts to -t: build -> built.' },
-      { base: 'send', past: 'sent', participle: 'sent', pattern: 'Past = Participle (A-B-B)', level: 'Beginner', sentence: 'I sent an urgent email this morning.', mnemonic: 'Final -d shifts to -t: send -> sent.' },
-      { base: 'spend', past: 'spent', participle: 'spent', pattern: 'Past = Participle (A-B-B)', level: 'Beginner', sentence: 'We spent our vacation in Spain.', mnemonic: 'Final -d shifts to -t: spend -> spent.' },
-      { base: 'keep', past: 'kept', participle: 'kept', pattern: 'Past = Participle (A-B-B)', level: 'Beginner', sentence: 'She kept all her childhood letters.', mnemonic: 'Double -ee shortens to -e + t: keep -> kept.' },
-      { base: 'sleep', past: 'slept', participle: 'slept', pattern: 'Past = Participle (A-B-B)', level: 'Beginner', sentence: 'The kitten slept on the soft cushion.', mnemonic: 'Double -ee shortens to -e + t: sleep -> slept.' },
-      { base: 'feel', past: 'felt', participle: 'felt', pattern: 'Past = Participle (A-B-B)', level: 'Beginner', sentence: 'I felt proud of my test results.', mnemonic: 'Double -ee shortens to -e + t: feel -> felt.' },
-      { base: 'leave', past: 'left', participle: 'left', pattern: 'Past = Participle (A-B-B)', level: 'Beginner', sentence: 'The train left the station on time.', mnemonic: 'Leave changes to left.' },
-      { base: 'meet', past: 'met', participle: 'met', pattern: 'Past = Participle (A-B-B)', level: 'Beginner', sentence: 'We met our teacher at the library.', mnemonic: 'Double -ee drops to single -e: meet -> met.' },
-      { base: 'find', past: 'found', participle: 'found', pattern: 'Past = Participle (A-B-B)', level: 'Beginner', sentence: 'He found a silver coin in the sand.', mnemonic: '-ind shifts to -ound.' },
-      { base: 'lose', past: 'lost', participle: 'lost', pattern: 'Past = Participle (A-B-B)', level: 'Beginner', sentence: 'I lost my keys in the park.', mnemonic: 'Lose drops -e and adds -t: lost.' },
-      { base: 'make', past: 'made', participle: 'made', pattern: 'Past = Participle (A-B-B)', level: 'Beginner', sentence: 'Grandma made delicious soup.', mnemonic: '-k shifts to -d: make -> made.' },
-      { base: 'pay', past: 'paid', participle: 'paid', pattern: 'Past = Participle (A-B-B)', level: 'Beginner', sentence: 'He paid for the concert tickets.', mnemonic: '-ay shifts to -aid: pay -> paid.' },
-      { base: 'say', past: 'said', participle: 'said', pattern: 'Past = Participle (A-B-B)', level: 'Beginner', sentence: 'She said goodbye before leaving.', mnemonic: '-ay shifts to -aid (pronounced "sed").' },
-      { base: 'tell', past: 'told', participle: 'told', pattern: 'Past = Participle (A-B-B)', level: 'Beginner', sentence: 'The captain told us a story.', mnemonic: '-ell shifts to -old: tell -> told.' },
-      { base: 'sell', past: 'sold', participle: 'sold', pattern: 'Past = Participle (A-B-B)', level: 'Beginner', sentence: 'They sold their old furniture.', mnemonic: '-ell shifts to -old: sell -> sold.' },
-      { base: 'understand', past: 'understood', participle: 'understood', pattern: 'Past = Participle (A-B-B)', level: 'Intermediate', sentence: 'Everyone understood the instructions.', mnemonic: 'Stand -> understood, same as stand -> stood!' },
-
-      // Vowel Swap i-a-u
-      { base: 'sing', past: 'sang', participle: 'sung', pattern: 'Vowel Swap (i-a-u)', level: 'Beginner', sentence: 'The choir sang a beautiful song.', mnemonic: 'Classic i -> a -> u pattern: sing, sang, sung!' },
-      { base: 'swim', past: 'swam', participle: 'swum', pattern: 'Vowel Swap (i-a-u)', level: 'Beginner', sentence: 'We swam across the pool three times.', mnemonic: 'Classic i -> a -> u pattern: swim, swam, swum!' },
-      { base: 'drink', past: 'drank', participle: 'drunk', pattern: 'Vowel Swap (i-a-u)', level: 'Beginner', sentence: 'He drank a glass of cold milk.', mnemonic: 'Classic i -> a -> u pattern: drink, drank, drunk!' },
-      { base: 'ring', past: 'rang', participle: 'rung', pattern: 'Vowel Swap (i-a-u)', level: 'Beginner', sentence: 'The phone rang five times.', mnemonic: 'Classic i -> a -> u pattern: ring, rang, rung!' },
-      { base: 'begin', past: 'began', participle: 'begun', pattern: 'Vowel Swap (i-a-u)', level: 'Beginner', sentence: 'The concert began at eight o clock.', mnemonic: 'Classic i -> a -> u pattern: begin, began, begun!' },
-      { base: 'sink', past: 'sank', participle: 'sunk', pattern: 'Vowel Swap (i-a-u)', level: 'Intermediate', sentence: 'The wooden toy sank in the bath.', mnemonic: 'Classic i -> a -> u pattern: sink, sank, sunk!' },
-      { base: 'shrink', past: 'shrank', participle: 'shrunk', pattern: 'Vowel Swap (i-a-u)', level: 'Advanced', sentence: 'My woolen sweater shrank in the dryer.', mnemonic: 'Classic i -> a -> u pattern: shrink, shrank, shrunk!' },
-
-      // A-B-A Pattern
-      { base: 'run', past: 'ran', participle: 'run', pattern: 'A-B-A Pattern', level: 'Beginner', sentence: 'She ran five miles yesterday.', mnemonic: 'Base and Participle are identical: run - ran - run!' },
-      { base: 'come', past: 'came', participle: 'come', pattern: 'A-B-A Pattern', level: 'Beginner', sentence: 'They came to our home for dinner.', mnemonic: 'Base and Participle are identical: come - came - come!' },
-      { base: 'become', past: 'became', participle: 'become', pattern: 'A-B-A Pattern', level: 'Intermediate', sentence: 'He became fluent in French.', mnemonic: 'Follows come: become - became - become!' },
-
-      // -en Participle
-      { base: 'break', past: 'broke', participle: 'broken', pattern: '-en Participle', level: 'Beginner', sentence: 'He accidentally broke the ceramic mug.', mnemonic: 'Past has -o-, Participle adds -en: broke, broken.' },
-      { base: 'speak', past: 'spoke', participle: 'spoken', pattern: '-en Participle', level: 'Beginner', sentence: 'The principal spoke to the assembly.', mnemonic: 'Rhymes with break: speak, spoke, spoken.' },
-      { base: 'choose', past: 'chose', participle: 'chosen', pattern: '-en Participle', level: 'Beginner', sentence: 'She chose the red dress for the party.', mnemonic: 'Double -oo drops one -o-: chose, chosen.' },
-      { base: 'freeze', past: 'froze', participle: 'frozen', pattern: '-en Participle', level: 'Intermediate', sentence: 'Water froze on the car windshield.', mnemonic: 'Freeze shifts to froze, frozen.' },
-      { base: 'steal', past: 'stole', participle: 'stolen', pattern: '-en Participle', level: 'Intermediate', sentence: 'The thief stole a priceless painting.', mnemonic: 'Steal shifts to stole, stolen.' },
-      { base: 'drive', past: 'drove', participle: 'driven', pattern: '-en Participle', level: 'Beginner', sentence: 'My uncle drove us to the airport.', mnemonic: '-i- shifts to -o- in past, -iven in participle.' },
-      { base: 'write', past: 'wrote', participle: 'written', pattern: '-en Participle', level: 'Beginner', sentence: 'She wrote a sweet poem for her mother.', mnemonic: 'Double -t in written!' },
-      { base: 'bite', past: 'bit', participle: 'bitten', pattern: '-en Participle', level: 'Intermediate', sentence: 'The puppy bit the chew toy.', mnemonic: 'Bite shifts to bit, then double -t: bitten.' },
-      { base: 'hide', past: 'hid', participle: 'hidden', pattern: '-en Participle', level: 'Intermediate', sentence: 'The boy hid behind the large tree.', mnemonic: 'Hide shifts to hid, then double -d: hidden.' },
-      { base: 'wake', past: 'woke', participle: 'woken', pattern: '-en Participle', level: 'Beginner', sentence: 'I woke up early this morning.', mnemonic: 'Wake shifts to woke, woken.' },
-      { base: 'rise', past: 'rose', participle: 'risen', pattern: '-en Participle', level: 'Advanced', sentence: 'The warm sun rose over the mountains.', mnemonic: 'Rise shifts to rose, risen.' },
-      { base: 'forget', past: 'forgot', participle: 'forgotten', pattern: '-en Participle', level: 'Beginner', sentence: 'I forgot my password again.', mnemonic: 'Forget -> forgot -> double -t: forgotten.' },
-
-      // Mixed A-B-C
-      { base: 'go', past: 'went', participle: 'gone', pattern: 'Mixed A-B-C', level: 'Beginner', sentence: 'They went to the cinema last night.', mnemonic: 'Completely unique forms: go, went, gone!' },
-      { base: 'do', past: 'did', participle: 'done', pattern: 'Mixed A-B-C', level: 'Beginner', sentence: 'She did her homework right after school.', mnemonic: 'Essential verb: do, did, done.' },
-      { base: 'see', past: 'saw', participle: 'seen', pattern: 'Mixed A-B-C', level: 'Beginner', sentence: 'I saw a shooting star in the sky.', mnemonic: 'See shifts to saw, seen.' },
-      { base: 'eat', past: 'ate', participle: 'eaten', pattern: 'Mixed A-B-C', level: 'Beginner', sentence: 'We ate delicious pizza for lunch.', mnemonic: 'Eat shifts to ate, eaten.' },
-      { base: 'take', past: 'took', participle: 'taken', pattern: 'Mixed A-B-C', level: 'Beginner', sentence: 'He took a quick photo of the sunset.', mnemonic: 'Take shifts to took, taken.' },
-      { base: 'give', past: 'gave', participle: 'given', pattern: 'Mixed A-B-C', level: 'Beginner', sentence: 'She gave me a warm birthday hug.', mnemonic: 'Give shifts to gave, given.' },
-      { base: 'know', past: 'knew', participle: 'known', pattern: 'Mixed A-B-C', level: 'Beginner', sentence: 'I knew the answer to the final question.', mnemonic: '-ow shifts to -ew in past, -own in participle.' },
-      { base: 'fly', past: 'flew', participle: 'flown', pattern: 'Mixed A-B-C', level: 'Beginner', sentence: 'The airplane flew high above the clouds.', mnemonic: 'Rhymes with know: fly, flew, flown!' },
-      { base: 'grow', past: 'grew', participle: 'grown', pattern: 'Mixed A-B-C', level: 'Beginner', sentence: 'The sunflower grew very tall.', mnemonic: 'Follows know pattern: grow, grew, grown.' },
-      { base: 'draw', past: 'drew', participle: 'drawn', pattern: 'Mixed A-B-C', level: 'Beginner', sentence: 'She drew a lovely landscape painting.', mnemonic: 'Draw shifts to drew, drawn.' },
-      { base: 'fall', past: 'fell', participle: 'fallen', pattern: 'Mixed A-B-C', level: 'Beginner', sentence: 'Autumn leaves fell from the trees.', mnemonic: 'Fall shifts to fell, fallen.' }
-    ];
-
-    /* ==========================================================================
-       2. BADGES DEFINITIONS
-       ========================================================================== */
-    const BADGES = [
-      { id: 'first_step', name: 'First Steps', icon: 'fa-shoe-prints', desc: 'Interact with your first flashcard or quiz question.', check: state => state.totalAnswered >= 1 },
-      { id: 'streak_5', name: 'On Fire', icon: 'fa-fire', desc: 'Reach a streak of 5 correct answers.', check: state => state.maxStreak >= 5 },
-      { id: 'streak_10', name: 'Unstoppable', icon: 'fa-bolt', desc: 'Reach a streak of 10 correct answers.', check: state => state.maxStreak >= 10 },
-      { id: 'speed_demon', name: 'Speed Demon', icon: 'fa-gauge-high', desc: 'Score 300+ in Speed Arcade mode.', check: state => state.highScoreSpeed >= 300 },
-      { id: 'matching_master', name: 'Memory Master', icon: 'fa-puzzle-piece', desc: 'Complete a Matching Game session.', check: state => state.matchingGamesWon >= 1 },
-      { id: 'verb_collector', name: 'Verb Scholar', icon: 'fa-book-bookmark', desc: 'Mark at least 10 verbs as Mastered.', check: state => state.masteredVerbs.length >= 10 },
-      { id: 'irregular_legend', name: 'Irregular Legend', icon: 'fa-crown', desc: 'Mark at least 30 verbs as Mastered.', check: state => state.masteredVerbs.length >= 30 },
-      { id: 'level_5', name: 'Grammar Master', icon: 'fa-graduation-cap', desc: 'Reach User Level 5.', check: state => state.level >= 5 }
-    ];
-
-    /* ==========================================================================
-       3. GLOBAL USER STATE & STORAGE
-       ========================================================================== */
-    let userState = {
-      score: 0,
-      xp: 0,
-      level: 1,
-      streak: 0,
-      maxStreak: 0,
-      totalAnswered: 0,
-      totalCorrect: 0,
-      matchingGamesWon: 0,
-      highScoreSpeed: 0,
-      masteredVerbs: [],
-      unlockedBadges: []
-    };
-
-    function loadUserState() {
-      const saved = localStorage.getItem('verbquest_user_state');
-      if (saved) {
-        try {
-          userState = { ...userState, ...JSON.parse(saved) };
-        } catch (e) {
-          console.error("Failed to parse saved state", e);
-        }
-      }
-      updateUserHeaderUI();
-    }
-
-    function saveUserState() {
-      localStorage.setItem('verbquest_user_state', JSON.stringify(userState));
-      checkBadges();
-      updateUserHeaderUI();
-    }
-
-    function addXP(amount) {
-      userState.xp += amount;
-      const oldLevel = userState.level;
-      userState.level = Math.floor(userState.xp / 100) + 1;
-      
-      if (userState.level > oldLevel) {
-        soundFX.playLevelUp();
-        triggerConfetti();
-      }
-      saveUserState();
-    }
-
-    function checkBadges() {
-      BADGES.forEach(badge => {
-        if (!userState.unlockedBadges.includes(badge.id) && badge.check(userState)) {
-          userState.unlockedBadges.push(badge.id);
-          soundFX.playLevelUp();
-          triggerConfetti();
-        }
-      });
-    }
-
-    function updateUserHeaderUI() {
-      document.getElementById('user-level-title').innerText = `Lv.${userState.level} ${getLevelTitle(userState.level)}`;
-      const currentLevelXP = userState.xp % 100;
-      document.getElementById('user-xp-bar').style.width = `${currentLevelXP}%`;
-      document.getElementById('user-xp-text').innerText = `${currentLevelXP}/100 XP`;
-      document.getElementById('header-streak').innerText = userState.streak;
-    }
-
-    function getLevelTitle(lvl) {
-      if (lvl <= 1) return 'Novice';
-      if (lvl <= 3) return 'Apprentice';
-      if (lvl <= 5) return 'Adept';
-      if (lvl <= 8) return 'Expert';
-      return 'Master';
-    }
-
-    /* ==========================================================================
-       4. SYNTHESIZED AUDIO FX (Web Audio API)
-       ========================================================================== */
-    class SoundFXManager {
-      constructor() {
-        this.ctx = null;
-        this.enabled = true;
-      }
-      init() {
-        if (!this.ctx) {
-          const AudioContext = window.AudioContext || window.webkitAudioContext;
-          if (AudioContext) this.ctx = new AudioContext();
-        }
-      }
-      playCorrect() {
-        if (!this.enabled) return;
-        this.init();
-        if (!this.ctx) return;
-        const now = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(523.25, now); // C5
-        osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.1); // E5
-        gain.gain.setValueAtTime(0.2, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(now);
-        osc.stop(now + 0.25);
-      }
-      playWrong() {
-        if (!this.enabled) return;
-        this.init();
-        if (!this.ctx) return;
-        const now = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(180, now);
-        osc.frequency.linearRampToValueAtTime(110, now + 0.2);
-        gain.gain.setValueAtTime(0.2, now);
-        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(now);
-        osc.stop(now + 0.25);
-      }
-      playFlip() {
-        if (!this.enabled) return;
-        this.init();
-        if (!this.ctx) return;
-        const now = this.ctx.currentTime;
-        const osc = this.ctx.createOscillator();
-        const gain = this.ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(400, now);
-        osc.frequency.exponentialRampToValueAtTime(700, now + 0.05);
-        gain.gain.setValueAtTime(0.1, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
-        osc.connect(gain);
-        gain.connect(this.ctx.destination);
-        osc.start(now);
-        osc.stop(now + 0.06);
-      }
-      playLevelUp() {
-        if (!this.enabled) return;
-        this.init();
-        if (!this.ctx) return;
-        const now = this.ctx.currentTime;
-        const freqs = [523.25, 659.25, 783.99, 1046.50];
-        freqs.forEach((f, idx) => {
-          const osc = this.ctx.createOscillator();
-          const gain = this.ctx.createGain();
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(f, now + idx * 0.08);
-          gain.gain.setValueAtTime(0.15, now + idx * 0.08);
-          gain.gain.exponentialRampToValueAtTime(0.01, now + idx * 0.08 + 0.2);
-          osc.connect(gain);
-          gain.connect(this.ctx.destination);
-          osc.start(now + idx * 0.08);
-          osc.stop(now + idx * 0.08 + 0.2);
-        });
-      }
-    }
-    const soundFX = new SoundFXManager();
-
-    function toggleSound() {
-      soundFX.enabled = !soundFX.enabled;
-      const btn = document.getElementById('btn-sound-toggle');
-      if (soundFX.enabled) {
-        btn.innerHTML = '<i class="fa-solid fa-volume-high text-base"></i>';
-      } else {
-        btn.innerHTML = '<i class="fa-solid fa-volume-xmark text-base text-slate-400"></i>';
-      }
-    }
-
-    /* ==========================================================================
-       5. WEB SPEECH API (TTS)
-       ========================================================================== */
-    let ttsSpeed = 1.0;
-    function toggleSpeechSpeed() {
-      ttsSpeed = ttsSpeed === 1.0 ? 0.8 : (ttsSpeed === 0.8 ? 1.2 : 1.0);
-      document.getElementById('speech-speed-text').innerText = `${ttsSpeed}x`;
-    }
-
-    function speakText(text) {
-      if (!('speechSynthesis' in window)) return;
-      window.speechSynthesis.cancel();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = ttsSpeed;
-      utterance.lang = 'en-US';
-      window.speechSynthesis.speak(utterance);
-    }
-
-    /* ==========================================================================
-       6. CONFETTI CANNON
-       ========================================================================== */
-    function triggerConfetti() {
-      const canvas = document.getElementById('confetti-canvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      
-      const particles = [];
-      const colors = ['#f43f5e', '#8b5cf6', '#3b82f6', '#10b981', '#f59e0b', '#ec4899'];
-      
-      for (let i = 0; i < 80; i++) {
-        particles.push({
-          x: canvas.width / 2,
-          y: canvas.height / 2,
-          vx: (Math.random() - 0.5) * 16,
-          vy: (Math.random() - 0.7) * 16,
-          size: Math.random() * 8 + 4,
-          color: colors[Math.floor(Math.random() * colors.length)],
-          rotation: Math.random() * 360,
-          rotSpeed: (Math.random() - 0.5) * 10,
-          opacity: 1,
-          gravity: 0.25
-        });
-      }
-      
-      let frame = 0;
-      function render() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        let active = false;
-        particles.forEach(p => {
-          if (p.opacity > 0) {
-            active = true;
-            p.x += p.vx;
-            p.y += p.vy;
-            p.vy += p.gravity;
-            p.rotation += p.rotSpeed;
-            p.opacity -= 0.012;
-            
-            ctx.save();
-            ctx.translate(p.x, p.y);
-            ctx.rotate((p.rotation * Math.PI) / 180);
-            ctx.globalAlpha = Math.max(0, p.opacity);
-            ctx.fillStyle = p.color;
-            ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
-            ctx.restore();
-          }
-        });
-        if (active && frame < 120) {
-          frame++;
-          requestAnimationFrame(render);
-        } else {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
-        }
-      }
-      render();
-    }
-
-    /* ==========================================================================
-       7. NAVIGATION & TAB SWITCHING
-       ========================================================================== */
-    let currentTab = 'flashcards';
-
-    function switchTab(tabId) {
-      currentTab = tabId;
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('bg-indigo-600', 'text-white', 'shadow-md', 'active');
-        btn.classList.add('text-slate-600', 'dark:text-slate-300', 'hover:bg-slate-100', 'dark:hover:bg-slate-800');
-      });
-
-      const activeBtn = document.getElementById(`tab-btn-${tabId}`);
-      if (activeBtn) {
-        activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-md', 'active');
-        activeBtn.classList.remove('text-slate-600', 'dark:text-slate-300', 'hover:bg-slate-100', 'dark:hover:bg-slate-800');
-      }
-
-      ['flashcards', 'matching', 'quiz', 'speed', 'vault'].forEach(view => {
-        const el = document.getElementById(`tab-view-${view}`);
-        if (el) el.classList.add('hidden');
-      });
-
-      const activeView = document.getElementById(`tab-view-${tabId}`);
-      if (activeView) activeView.classList.remove('hidden');
-
-      // Initialize tab specific logic
-      if (tabId === 'matching') initMatchingGame();
-      if (tabId === 'quiz') initSentenceQuiz();
-      if (tabId === 'vault') renderVerbVaultTable();
-    }
-
-    function toggleDarkMode() {
-      document.documentElement.classList.toggle('dark');
-      const isDark = document.documentElement.classList.contains('dark');
-      localStorage.setItem('verbquest_theme', isDark ? 'dark' : 'light');
-    }
-
-    /* ==========================================================================
-       8. TAB 1: FLASHCARDS MODULE
-       ========================================================================== */
-    let currentDeck = [];
-    let currentCardIndex = 0;
-    let isCardFlipped = false;
-    let autoplayTimer = null;
-
-    function renderFlashcardDeck() {
-      const levelVal = document.getElementById('flashcard-filter-level').value;
-      const patternVal = document.getElementById('flashcard-filter-pattern').value;
-      const searchVal = document.getElementById('flashcard-search').value.trim().toLowerCase();
-
-      currentDeck = VERBS_DATABASE.filter(v => {
-        const matchLevel = levelVal === 'ALL' || v.level === levelVal;
-        const matchPattern = patternVal === 'ALL' || v.pattern === patternVal;
-        const matchSearch = searchVal === '' || 
-          v.base.toLowerCase().includes(searchVal) || 
-          v.past.toLowerCase().includes(searchVal) || 
-          v.participle.toLowerCase().includes(searchVal);
-        return matchLevel && matchPattern && matchSearch;
-      });
-
-      if (currentDeck.length === 0) {
-        currentDeck = [...VERBS_DATABASE];
-      }
-
-      currentCardIndex = 0;
-      showCard(currentCardIndex);
-    }
-
-    function showCard(index) {
-      if (!currentDeck || currentDeck.length === 0) return;
-      const verb = currentDeck[index];
-      window.currentCardVerb = verb;
-
-      // Reset card flip
-      isCardFlipped = false;
-      const cardEl = document.getElementById('flashcard-card');
-      cardEl.classList.remove('rotate-y-180');
-
-      // Update Front
-      document.getElementById('fc-front-base').innerText = verb.base.toUpperCase();
-      document.getElementById('fc-front-pattern').innerText = verb.pattern;
-      document.getElementById('fc-front-level').innerText = verb.level;
-      
-      const isMastered = userState.masteredVerbs.includes(verb.base);
-      const masteredBadge = document.getElementById('fc-mastered-badge');
-      if (isMastered) masteredBadge.classList.remove('hidden');
-      else masteredBadge.classList.add('hidden');
-
-      // Update Back
-      document.getElementById('fc-back-pattern').innerText = verb.pattern;
-      document.getElementById('fc-back-v1').innerText = verb.base;
-      document.getElementById('fc-back-v2').innerText = verb.past;
-      document.getElementById('fc-back-v3').innerText = verb.participle;
-      document.getElementById('fc-back-sentence').innerText = `"${verb.sentence}"`;
-      document.getElementById('fc-back-mnemonic').innerText = verb.mnemonic;
-
-      // Master button state
-      const starIcon = document.getElementById('fc-star-icon');
-      const starText = document.getElementById('fc-star-text');
-      if (isMastered) {
-        starIcon.className = 'fa-solid fa-star text-amber-500';
-        starText.innerText = 'Mastered';
-      } else {
-        starIcon.className = 'fa-regular fa-star';
-        starText.innerText = 'Mark Mastered';
-      }
-
-      document.getElementById('fc-card-counter').innerText = `Card ${index + 1} of ${currentDeck.length}`;
-    }
-
-    function flipCurrentCard() {
-      isCardFlipped = !isCardFlipped;
-      const cardEl = document.getElementById('flashcard-card');
-      soundFX.playFlip();
-      if (isCardFlipped) {
-        cardEl.classList.add('rotate-y-180');
-      } else {
-        cardEl.classList.remove('rotate-y-180');
-      }
-
-      // Award 1 XP on first card interaction
-      userState.totalAnswered++;
-      saveUserState();
-    }
-
-    function nextCard() {
-      currentCardIndex = (currentCardIndex + 1) % currentDeck.length;
-      showCard(currentCardIndex);
-    }
-
-    function prevCard() {
-      currentCardIndex = (currentCardIndex - 1 + currentDeck.length) % currentDeck.length;
-      showCard(currentCardIndex);
-    }
-
-    function shuffleDeck() {
-      for (let i = currentDeck.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [currentDeck[i], currentDeck[j]] = [currentDeck[j], currentDeck[i]];
-      }
-      currentCardIndex = 0;
-      showCard(currentCardIndex);
-      soundFX.playFlip();
-    }
-
-    function toggleAutoplay() {
-      const btnIcon = document.getElementById('icon-autoplay');
-      if (autoplayTimer) {
-        clearInterval(autoplayTimer);
-        autoplayTimer = null;
-        btnIcon.className = 'fa-solid fa-play text-xs';
-      } else {
-        btnIcon.className = 'fa-solid fa-pause text-xs text-indigo-600';
-        autoplayTimer = setInterval(() => {
-          if (!isCardFlipped) {
-            flipCurrentCard();
-          } else {
-            nextCard();
-          }
-        }, 4000);
-      }
-    }
-
-    function toggleMastery(verbBase) {
-      const idx = userState.masteredVerbs.indexOf(verbBase);
-      if (idx >= 0) {
-        userState.masteredVerbs.splice(idx, 1);
-      } else {
-        userState.masteredVerbs.push(verbBase);
-        addXP(10);
-      }
-      saveUserState();
-      showCard(currentCardIndex);
-    }
-
-    /* ==========================================================================
-       9. TAB 2: MATCHING GAME MODULE
-       ========================================================================== */
-    let matchTiles = [];
-    let selectedTiles = [];
-    let matchMoves = 0;
-    let matchPairsLeft = 0;
-    let matchTimerInterval = null;
-    let matchTimeSeconds = 0;
-
-    function initMatchingGame() {
-      const targetType = document.getElementById('match-target-type').value;
-      const numPairs = parseInt(document.getElementById('match-grid-size').value, 10);
-
-      // Select random verbs
-      const shuffledVerbs = [...VERBS_DATABASE].sort(() => 0.5 - Math.random()).slice(0, numPairs);
-      
-      matchTiles = [];
-      shuffledVerbs.forEach((verb, pairId) => {
-        let text1 = verb.base;
-        let text2 = verb.past;
-
-        if (targetType === 'base-participle') text2 = verb.participle;
-        if (targetType === 'past-participle') {
-          text1 = verb.past;
-          text2 = verb.participle;
-        }
-
-        matchTiles.push({ id: pairId * 2, pairId, text: text1, isFlipped: false, isMatched: false });
-        matchTiles.push({ id: pairId * 2 + 1, pairId, text: text2, isFlipped: false, isMatched: false });
-      });
-
-      matchTiles.sort(() => 0.5 - Math.random());
-
-      selectedTiles = [];
-      matchMoves = 0;
-      matchPairsLeft = numPairs;
-      matchTimeSeconds = 0;
-
-      document.getElementById('match-moves-count').innerText = '0';
-      document.getElementById('match-pairs-left').innerText = numPairs;
-      document.getElementById('match-timer').innerText = '00:00';
-
-      if (matchTimerInterval) clearInterval(matchTimerInterval);
-      matchTimerInterval = setInterval(() => {
-        matchTimeSeconds++;
-        const mins = String(Math.floor(matchTimeSeconds / 60)).padStart(2, '0');
-        const secs = String(matchTimeSeconds % 60).padStart(2, '0');
-        document.getElementById('match-timer').innerText = `${mins}:${secs}`;
-      }, 1000);
-
-      renderMatchingGrid();
-    }
-
-    function renderMatchingGrid() {
-      const gridContainer = document.getElementById('matching-grid');
-      gridContainer.innerHTML = '';
-
-      matchTiles.forEach((tile, idx) => {
-        const btn = document.createElement('button');
-        btn.onclick = () => handleTileClick(idx);
-        btn.className = `h-24 sm:h-28 rounded-2xl font-black text-sm sm:text-base border transition-all duration-300 transform flex items-center justify-center p-3 shadow-sm ${
-          tile.isMatched 
-            ? 'bg-emerald-500 text-white border-emerald-600 scale-95 opacity-80 cursor-default'
-            : tile.isFlipped
-            ? 'bg-indigo-600 text-white border-indigo-700 scale-100 shadow-lg'
-            : 'bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border-slate-200 dark:border-slate-700 hover:border-indigo-400 hover:scale-[1.02]'
-        }`;
-
-        if (tile.isFlipped || tile.isMatched) {
-          btn.innerHTML = `<span>${tile.text}</span>`;
-        } else {
-          btn.innerHTML = `<i class="fa-solid fa-question text-slate-300 dark:text-slate-600 text-xl"></i>`;
-        }
-
-        gridContainer.appendChild(btn);
-      });
-    }
-
-    function handleTileClick(index) {
-      const tile = matchTiles[index];
-      if (tile.isMatched || tile.isFlipped || selectedTiles.length >= 2) return;
-
-      tile.isFlipped = true;
-      selectedTiles.push({ tile, index });
-      soundFX.playFlip();
-      renderMatchingGrid();
-
-      if (selectedTiles.length === 2) {
-        matchMoves++;
-        document.getElementById('match-moves-count').innerText = matchMoves;
-
-        const [t1, t2] = selectedTiles;
-        if (t1.tile.pairId === t2.tile.pairId) {
-          // MATCH SUCCESS!
-          t1.tile.isMatched = true;
-          t2.tile.isMatched = true;
-          selectedTiles = [];
-          matchPairsLeft--;
-          document.getElementById('match-pairs-left').innerText = matchPairsLeft;
-          soundFX.playCorrect();
-          addXP(15);
-
-          if (matchPairsLeft === 0) {
-            clearInterval(matchTimerInterval);
-            userState.matchingGamesWon++;
-            saveUserState();
-            soundFX.playLevelUp();
-            triggerConfetti();
-          }
-          renderMatchingGrid();
-        } else {
-          // MISMATCH
-          soundFX.playWrong();
-          setTimeout(() => {
-            t1.tile.isFlipped = false;
-            t2.tile.isFlipped = false;
-            selectedTiles = [];
-            renderMatchingGrid();
-          }, 800);
-        }
-      }
-    }
-
-    /* ==========================================================================
-       10. TAB 3: SENTENCE QUIZ MODULE
-       ========================================================================== */
-    let currentQuizVerb = null;
-    let quizTenseTarget = 'past'; // 'past' or 'participle'
-    let isChoiceMode = false;
-    let quizQuestionCount = 1;
-
-    function initSentenceQuiz() {
-      nextQuizQuestion();
-    }
-
-    function toggleQuizMode() {
-      isChoiceMode = !isChoiceMode;
-      const btn = document.getElementById('quiz-mode-toggle');
-      if (isChoiceMode) {
-        btn.innerHTML = '<i class="fa-solid fa-keyboard mr-1"></i> Switch to Type Input';
-      } else {
-        btn.innerHTML = '<i class="fa-solid fa-sliders mr-1"></i> Switch to Multiple Choice';
-      }
-      setupQuizInputs();
-    }
-
-    function nextQuizQuestion() {
-      currentQuizVerb = VERBS_DATABASE[Math.floor(Math.random() * VERBS_DATABASE.length)];
-      quizTenseTarget = Math.random() > 0.5 ? 'past' : 'participle';
-      quizQuestionCount++;
-
-      document.getElementById('quiz-question-num').innerText = `Question ${quizQuestionCount}`;
-      document.getElementById('quiz-pattern-badge').innerText = `Pattern: ${currentQuizVerb.pattern}`;
-      document.getElementById('quiz-target-verb').innerText = currentQuizVerb.base.toUpperCase();
-      document.getElementById('quiz-target-tense').innerText = quizTenseTarget === 'past' ? 'Past Simple (V2)' : 'Past Participle (V3)';
-
-      // Generate sentence with blank
-      let sentence = currentQuizVerb.sentence;
-      const targetWord = quizTenseTarget === 'past' ? currentQuizVerb.past : currentQuizVerb.participle;
-      
-      // Simple regex replacement for verb form in sentence
-      const regex = new RegExp(`\\b${targetWord}\\b`, 'gi');
-      if (regex.test(sentence)) {
-        sentence = sentence.replace(regex, `<span class="px-3 py-1 rounded-xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 font-bold underline underline-offset-4">______</span>`);
-      } else {
-        sentence = sentence.replace(new RegExp(`\\b${currentQuizVerb.base}\\b`, 'gi'), `<span class="px-3 py-1 rounded-xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 font-bold underline underline-offset-4">______</span>`);
-      }
-
-      document.getElementById('quiz-sentence-display').innerHTML = sentence;
-
-      // Reset feedback and hints
-      document.getElementById('quiz-feedback-box').classList.add('hidden');
-      document.getElementById('btn-quiz-next').classList.add('hidden');
-      document.getElementById('quiz-hint-text').innerText = 'Need a Hint?';
-      document.getElementById('quiz-answer-input').value = '';
-      document.getElementById('quiz-answer-input').disabled = false;
-
-      setupQuizInputs();
-    }
-
-    function setupQuizInputs() {
-      const textContainer = document.getElementById('quiz-mode-text');
-      const choiceContainer = document.getElementById('quiz-mode-choice');
-
-      if (isChoiceMode) {
-        textContainer.classList.add('hidden');
-        choiceContainer.classList.remove('hidden');
-
-        // Generate 4 options
-        const correctAnswer = quizTenseTarget === 'past' ? currentQuizVerb.past : currentQuizVerb.participle;
-        const options = new Set([correctAnswer]);
-
-        while (options.size < 4) {
-          const randVerb = VERBS_DATABASE[Math.floor(Math.random() * VERBS_DATABASE.length)];
-          const randForm = Math.random() > 0.5 ? randVerb.past : randVerb.participle;
-          options.add(randForm);
-        }
-
-        const shuffledOptions = Array.from(options).sort(() => 0.5 - Math.random());
-        choiceContainer.innerHTML = '';
-
-        shuffledOptions.forEach(opt => {
-          const btn = document.createElement('button');
-          btn.onclick = () => submitQuizChoice(opt);
-          btn.className = 'w-full py-3.5 px-4 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-indigo-500 rounded-2xl font-bold text-sm text-slate-800 dark:text-slate-100 hover:bg-indigo-50 dark:hover:bg-slate-700 transition shadow-sm';
-          btn.innerText = opt;
-          choiceContainer.appendChild(btn);
-        });
-
-      } else {
-        textContainer.classList.remove('hidden');
-        choiceContainer.classList.add('hidden');
-      }
-    }
-
-    function submitQuizAnswer() {
-      const userAns = document.getElementById('quiz-answer-input').value.trim().toLowerCase();
-      const targetAns = (quizTenseTarget === 'past' ? currentQuizVerb.past : currentQuizVerb.participle).toLowerCase();
-
-      evaluateQuiz(userAns === targetAns, targetAns);
-    }
-
-    function submitQuizChoice(selectedAns) {
-      const targetAns = (quizTenseTarget === 'past' ? currentQuizVerb.past : currentQuizVerb.participle).toLowerCase();
-      evaluateQuiz(selectedAns.toLowerCase() === targetAns, targetAns);
-    }
-
-    function evaluateQuiz(isCorrect, targetAns) {
-      const feedbackBox = document.getElementById('quiz-feedback-box');
-      const feedbackTitle = document.getElementById('quiz-feedback-title');
-      const feedbackExp = document.getElementById('quiz-feedback-explanation');
-      
-      feedbackBox.classList.remove('hidden');
-      document.getElementById('btn-quiz-next').classList.remove('hidden');
-      document.getElementById('quiz-answer-input').disabled = true;
-
-      userState.totalAnswered++;
-
-      if (isCorrect) {
-        userState.totalCorrect++;
-        userState.streak++;
-        if (userState.streak > userState.maxStreak) userState.maxStreak = userState.streak;
-        
-        soundFX.playCorrect();
-        addXP(20);
-
-        feedbackBox.className = 'rounded-2xl p-5 border bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200';
-        feedbackTitle.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-500 text-xl"></i> <span>Spot on! Excellent job!</span>`;
-        feedbackExp.innerHTML = `<strong>Rule:</strong> "${currentQuizVerb.base}" is an irregular verb [${currentQuizVerb.pattern}].<br>Forms: Base (<strong>${currentQuizVerb.base}</strong>) → Past (<strong>${currentQuizVerb.past}</strong>) → Participle (<strong>${currentQuizVerb.participle}</strong>).`;
-      } else {
-        userState.streak = 0;
-        soundFX.playWrong();
-
-        feedbackBox.className = 'rounded-2xl p-5 border bg-rose-50 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800 text-rose-900 dark:text-rose-200';
-        feedbackTitle.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-500 text-xl"></i> <span>Not quite right!</span>`;
-        feedbackExp.innerHTML = `The correct form was <strong>"${targetAns}"</strong>.<br><strong>Pattern Tip:</strong> ${currentQuizVerb.mnemonic}`;
-      }
-
-      saveUserState();
-    }
-
-    function showQuizHint() {
-      const hintText = document.getElementById('quiz-hint-text');
-      const targetAns = quizTenseTarget === 'past' ? currentQuizVerb.past : currentQuizVerb.participle;
-      hintText.innerText = `Starts with "${targetAns.charAt(0).toUpperCase()}" (${targetAns.length} letters) - Pattern: ${currentQuizVerb.pattern}`;
-    }
-
-    function speakQuizSentence() {
-      if (currentQuizVerb) speakText(currentQuizVerb.sentence);
-    }
-
-    /* ==========================================================================
-       11. TAB 4: SPEED ARCADE MODULE
-       ========================================================================== */
-    let arcadeTimer = 60;
-    let arcadeScore = 0;
-    let arcadeLives = 3;
-    let arcadeStreak = 0;
-    let arcadeInterval = null;
-    let currentArcadeTarget = null;
-    let currentArcadeTense = 'past';
-
-    function startSpeedArcade() {
-      document.getElementById('arcade-start-screen').classList.add('hidden');
-      document.getElementById('arcade-over-screen').classList.add('hidden');
-      document.getElementById('arcade-game-screen').classList.remove('hidden');
-
-      arcadeTimer = 60;
-      arcadeScore = 0;
-      arcadeLives = 3;
-      arcadeStreak = 0;
-
-      updateArcadeHUD();
-
-      if (arcadeInterval) clearInterval(arcadeInterval);
-      arcadeInterval = setInterval(() => {
-        arcadeTimer--;
-        document.getElementById('arcade-timer-text').innerText = `${arcadeTimer}s`;
-        document.getElementById('arcade-timer-bar').style.width = `${(arcadeTimer / 60) * 100}%`;
-
-        if (arcadeTimer <= 0) {
-          endSpeedArcade();
-        }
-      }, 1000);
-
-      nextArcadeQuestion();
-    }
-
-    function updateArcadeHUD() {
-      document.getElementById('arcade-score').innerText = arcadeScore;
-      document.getElementById('arcade-multiplier').innerText = `${Math.min(5, Math.floor(arcadeStreak / 3) + 1)}x MULTIPLIER`;
-
-      let heartsHTML = '';
-      for (let i = 0; i < 3; i++) {
-        if (i < arcadeLives) {
-          heartsHTML += `<i class="fa-solid fa-heart text-base text-rose-500"></i>`;
-        } else {
-          heartsHTML += `<i class="fa-regular fa-heart text-base text-slate-600"></i>`;
-        }
-      }
-      document.getElementById('arcade-lives-container').innerHTML = heartsHTML;
-      document.getElementById('speed-high-score-display').innerText = `High Score: ${userState.highScoreSpeed}`;
-    }
-
-    function nextArcadeQuestion() {
-      currentArcadeTarget = VERBS_DATABASE[Math.floor(Math.random() * VERBS_DATABASE.length)];
-      currentArcadeTense = Math.random() > 0.5 ? 'past' : 'participle';
-
-      document.getElementById('arcade-tense-prompt').innerText = currentArcadeTense === 'past' ? 'PAST SIMPLE (V2) FORM OF:' : 'PAST PARTICIPLE (V3) FORM OF:';
-      document.getElementById('arcade-prompt-verb').innerText = currentArcadeTarget.base.toUpperCase();
-
-      const correctAnswer = currentArcadeTense === 'past' ? currentArcadeTarget.past : currentArcadeTarget.participle;
-      const options = new Set([correctAnswer]);
-
-      while (options.size < 4) {
-        const randV = VERBS_DATABASE[Math.floor(Math.random() * VERBS_DATABASE.length)];
-        options.add(Math.random() > 0.5 ? randV.past : randV.participle);
-      }
-
-      const shuffled = Array.from(options).sort(() => 0.5 - Math.random());
-      const grid = document.getElementById('arcade-options-grid');
-      grid.innerHTML = '';
-
-      shuffled.forEach((opt, idx) => {
-        const btn = document.createElement('button');
-        btn.onclick = () => submitArcadeChoice(opt);
-        btn.className = 'py-4 px-3 bg-slate-800 hover:bg-indigo-600 border border-slate-700 hover:border-indigo-400 rounded-2xl font-black text-base text-white transition transform active:scale-95 shadow-md flex items-center justify-between';
-        btn.innerHTML = `<span>${opt}</span><span class="text-xs font-bold text-slate-500 bg-slate-900/60 px-2 py-0.5 rounded-lg border border-slate-700">${idx + 1}</span>`;
-        grid.appendChild(btn);
-      });
-    }
-
-    function submitArcadeChoice(selectedOpt) {
-      const targetAns = currentArcadeTense === 'past' ? currentArcadeTarget.past : currentArcadeTarget.participle;
-
-      if (selectedOpt.toLowerCase() === targetAns.toLowerCase()) {
-        arcadeStreak++;
-        const multiplier = Math.min(5, Math.floor(arcadeStreak / 3) + 1);
-        arcadeScore += 50 * multiplier;
-        arcadeTimer = Math.min(60, arcadeTimer + 2); // Bonus time
-        soundFX.playCorrect();
-      } else {
-        arcadeStreak = 0;
-        arcadeLives--;
-        arcadeTimer = Math.max(0, arcadeTimer - 4); // Penalty
-        soundFX.playWrong();
-
-        if (arcadeLives <= 0) {
-          endSpeedArcade();
-          return;
-        }
-      }
-
-      updateArcadeHUD();
-      nextArcadeQuestion();
-    }
-
-    function endSpeedArcade() {
-      clearInterval(arcadeInterval);
-      document.getElementById('arcade-game-screen').classList.add('hidden');
-      document.getElementById('arcade-over-screen').classList.remove('hidden');
-
-      if (arcadeScore > userState.highScoreSpeed) {
-        userState.highScoreSpeed = arcadeScore;
-        triggerConfetti();
-      }
-
-      addXP(Math.floor(arcadeScore / 10));
-      saveUserState();
-
-      document.getElementById('arcade-final-score').innerText = arcadeScore;
-      document.getElementById('arcade-final-streak').innerText = arcadeStreak;
-      document.getElementById('arcade-final-accuracy').innerText = `${Math.min(100, Math.floor((arcadeScore / (arcadeScore + 200)) * 100))}%`;
-    }
-
-    // Keyboard controls for Arcade 1-4
-    window.addEventListener('keydown', (e) => {
-      if (currentTab === 'speed' && !document.getElementById('arcade-game-screen').classList.contains('hidden')) {
-        const key = e.key;
-        if (['1', '2', '3', '4'].includes(key)) {
-          const idx = parseInt(key, 10) - 1;
-          const btns = document.querySelectorAll('#arcade-options-grid button');
-          if (btns[idx]) btns[idx].click();
-        }
-      }
-    });
-
-    /* ==========================================================================
-       12. TAB 5: VERB VAULT & USER STATS
-       ========================================================================== */
-    function renderVerbVaultTable() {
-      // Update Stats Dashboard
-      document.getElementById('stat-mastered-count').innerText = `${userState.masteredVerbs.length} / ${VERBS_DATABASE.length}`;
-      
-      const acc = userState.totalAnswered > 0 
-        ? Math.round((userState.totalCorrect / userState.totalAnswered) * 100) 
-        : 0;
-      document.getElementById('stat-accuracy').innerText = `${acc}%`;
-      document.getElementById('stat-best-streak').innerText = userState.maxStreak;
-      document.getElementById('stat-badges-count').innerText = `${userState.unlockedBadges.length} / ${BADGES.length}`;
-
-      // Render Badges
-      const badgesContainer = document.getElementById('badges-grid');
-      badgesContainer.innerHTML = '';
-
-      BADGES.forEach(b => {
-        const isUnlocked = userState.unlockedBadges.includes(b.id);
-        const card = document.createElement('div');
-        card.className = `p-4 rounded-2xl border transition-all ${
-          isUnlocked 
-            ? 'bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-950/40 dark:to-purple-950/40 border-indigo-200 dark:border-indigo-800' 
-            : 'bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-slate-700/60 opacity-60'
-        }`;
-
-        card.innerHTML = `
-          <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg ${
-              isUnlocked ? 'bg-indigo-600 text-white shadow-md' : 'bg-slate-200 dark:bg-slate-700 text-slate-400'
-            }">
-              <i class="fa-solid ${b.icon}"></i>
-            </div>
-            <div>
-              <h4 class="font-extrabold text-xs text-slate-800 dark:text-slate-100">${b.name}</h4>
-              <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-snug">${b.desc}</p>
-            </div>
-          </div>
-        `;
-        badgesContainer.appendChild(card);
-      });
-
-      // Render Verb Table
-      const searchVal = document.getElementById('vault-search-input').value.trim().toLowerCase();
-      const tbody = document.getElementById('vault-table-body');
-      tbody.innerHTML = '';
-
-      const filtered = VERBS_DATABASE.filter(v => 
-        searchVal === '' ||
-        v.base.toLowerCase().includes(searchVal) ||
-        v.past.toLowerCase().includes(searchVal) ||
-        v.participle.toLowerCase().includes(searchVal) ||
-        v.pattern.toLowerCase().includes(searchVal)
-      );
-
-      filtered.forEach(v => {
-        const isMastered = userState.masteredVerbs.includes(v.base);
-        const tr = document.createElement('tr');
-        tr.className = 'hover:bg-slate-50 dark:hover:bg-slate-800/50 transition';
-
-        tr.innerHTML = `
-          <td class="p-3 font-bold text-slate-800 dark:text-slate-100">${v.base}</td>
-          <td class="p-3 font-bold text-indigo-600 dark:text-indigo-400">${v.past}</td>
-          <td class="p-3 font-bold text-purple-600 dark:text-purple-400">${v.participle}</td>
-          <td class="p-3"><span class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-semibold text-[11px]">${v.pattern}</span></td>
-          <td class="p-3"><span class="px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-300 font-semibold text-[11px]">${v.level}</span></td>
-          <td class="p-3 text-center">
-            <button onclick="toggleMastery('${v.base}'); renderVerbVaultTable();" class="text-sm">
-              <i class="${isMastered ? 'fa-solid fa-star text-amber-500' : 'fa-regular fa-star text-slate-400'}"></i>
-            </button>
-          </td>
-          <td class="p-3 text-center">
-            <button onclick="speakText('${v.base}, ${v.past}, ${v.participle}')" class="text-indigo-500 hover:text-indigo-600">
-              <i class="fa-solid fa-volume-high"></i>
-            </button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
-
-    /* ==========================================================================
-       13. INIT ON LOAD
-       ========================================================================== */
-    window.onload = function() {
-      // Check dark mode preference
-      const savedTheme = localStorage.getItem('verbquest_theme');
-      if (savedTheme === 'dark' || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark');
-      }
-
-      loadUserState();
-      renderFlashcardDeck();
-    };
-  </script>
-
-</body>
-</html>
+                  <div class="font-black text-lg text-indigo-
