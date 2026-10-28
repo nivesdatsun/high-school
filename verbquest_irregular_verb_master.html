@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en" class="h-full">
 <head>
@@ -774,19 +775,22 @@
     </div>
   </div>
 
-  <!-- CERTIFICATE OF MASTERY MODAL (UNLOCKED AT 80%) -->
-  <div id="modal-certificate" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-    <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-4xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-6 max-h-[90vh] overflow-y-auto my-auto">
+  <!-- CERTIFICATE OF MASTERY MODAL (GAMIFIED QUEST EDITION) -->
+  <div id="modal-certificate" class="fixed inset-0 z-50 hidden bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white dark:bg-slate-900 rounded-3xl max-w-5xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-6 max-h-[92vh] overflow-y-auto my-auto">
       
       <!-- Modal Header -->
       <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
         <div class="flex items-center space-x-3">
-          <div class="w-10 h-10 rounded-xl bg-amber-400 text-slate-950 flex items-center justify-center font-black text-xl shadow-md">
-            <i class="fa-solid fa-award"></i>
+          <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-amber-400 via-amber-500 to-yellow-600 text-slate-950 flex items-center justify-center font-black text-xl shadow-lg shadow-amber-500/20">
+            <i class="fa-solid fa-shield-halved"></i>
           </div>
           <div>
-            <h3 class="text-lg font-black text-slate-800 dark:text-slate-100">Certificate of Mastery</h3>
-            <p class="text-xs text-slate-400">Official Recognition by Mrs. Nives Torresi</p>
+            <h3 class="text-lg sm:text-xl font-black text-slate-800 dark:text-slate-100 flex items-center gap-2">
+              <span>VerbQuest Champion Certificate</span>
+              <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 border border-amber-300/40">Official Award</span>
+            </h3>
+            <p class="text-xs text-slate-400">Awarded for high-level mastery of English irregular verbs &bull; Mrs. Nives Torresi</p>
           </div>
         </div>
         <button onclick="closeCertificateModal()" class="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200 transition flex items-center justify-center">
@@ -794,40 +798,53 @@
         </button>
       </div>
 
-      <!-- Student Credentials Inputs -->
-      <div class="bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 space-y-3">
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <!-- Student & Class Inputs (Zero Email / Ad-Free) -->
+      <div class="bg-slate-50 dark:bg-slate-800/60 p-4 sm:p-5 rounded-2xl border border-slate-200/60 dark:border-slate-700/60 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
           <div>
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Student Full Name:</label>
-            <input type="text" id="cert-student-input" oninput="updateCertPreview()" value="VerbQuest Champion" placeholder="Enter Full Name..." class="w-full px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <label class="block text-[10px] font-extrabold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-1">
+              <i class="fa-solid fa-user-ninja mr-1"></i> Student Hero Name
+            </label>
+            <input type="text" id="cert-student-input" oninput="updateCertPreview()" value="VerbQuest Champion" placeholder="Enter Full Name..." class="w-full px-3.5 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-sm">
           </div>
 
           <div>
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Student Email (Optional):</label>
-            <input type="email" id="cert-email-input" oninput="updateCertPreview()" placeholder="student@school.edu" class="w-full px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <label class="block text-[10px] font-extrabold uppercase tracking-wider text-sky-600 dark:text-sky-400 mb-1">
+              <i class="fa-solid fa-school mr-1"></i> School / Class (Optional)
+            </label>
+            <input type="text" id="cert-school-input" oninput="updateCertPreview()" placeholder="e.g. Liceo Galvani - 3B" class="w-full px-3.5 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-sky-500 shadow-sm">
           </div>
 
           <div>
-            <label class="block text-[10px] font-bold uppercase text-slate-400 mb-1">Course Instructor:</label>
-            <input type="text" id="cert-teacher-input" oninput="updateCertPreview()" value="Mrs. Nives Torresi" class="w-full px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500" readonly>
+            <label class="block text-[10px] font-extrabold uppercase tracking-wider text-slate-400 mb-1">
+              <i class="fa-solid fa-chalkboard-user mr-1"></i> Certified Instructor
+            </label>
+            <input type="text" id="cert-teacher-input" oninput="updateCertPreview()" value="Mrs. Nives Torresi" class="w-full px-3.5 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-sm" readonly>
           </div>
         </div>
 
-        <div class="flex items-center justify-end space-x-2 pt-2">
-          <button onclick="downloadCertificatePNG()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-extrabold text-xs hover:opacity-95 transition shadow-md flex items-center space-x-1.5">
-            <i class="fa-solid fa-file-image"></i>
-            <span>Download PNG Certificate</span>
-          </button>
-          <button onclick="printCertificate()" class="px-4 py-2 rounded-xl bg-slate-800 dark:bg-slate-700 text-white font-extrabold text-xs hover:bg-slate-700 transition flex items-center space-x-1.5">
-            <i class="fa-solid fa-print"></i>
-            <span>Print</span>
-          </button>
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2 border-t border-slate-200/50 dark:border-slate-700/50">
+          <div class="flex items-center space-x-2 text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>Zero personal data retention &bull; 100% ad-free &bull; Ready to print & share</span>
+          </div>
+
+          <div class="flex items-center space-x-2.5 w-full sm:w-auto justify-end">
+            <button onclick="downloadCertificatePNG()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-600 text-slate-950 font-black text-xs hover:opacity-95 transition shadow-lg shadow-amber-500/25 flex items-center space-x-2">
+              <i class="fa-solid fa-download"></i>
+              <span>Download High-Res PNG</span>
+            </button>
+            <button onclick="printCertificate()" class="px-4 py-2.5 rounded-xl bg-slate-800 dark:bg-slate-700 text-white font-extrabold text-xs hover:bg-slate-700 transition flex items-center space-x-1.5">
+              <i class="fa-solid fa-print"></i>
+              <span>Print</span>
+            </button>
+          </div>
         </div>
       </div>
 
       <!-- Certificate High-Res Canvas Display -->
-      <div class="rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden bg-slate-100 dark:bg-slate-950 flex items-center justify-center p-2 shadow-inner">
-        <canvas id="certificate-canvas" class="w-full h-auto max-w-full rounded-xl shadow-lg border border-amber-300/40" width="1600" height="1131"></canvas>
+      <div class="rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden bg-slate-950 flex items-center justify-center p-2 sm:p-4 shadow-2xl">
+        <canvas id="certificate-canvas" class="w-full h-auto max-w-full rounded-xl shadow-2xl" width="1600" height="1131"></canvas>
       </div>
 
     </div>
@@ -931,7 +948,7 @@
       badges: [],
       highScoreSpeed: 0,
       studentName: "VerbQuest Champion",
-      studentEmail: ""
+      schoolName: ""
     };
 
     let teacherState = {
@@ -1010,13 +1027,8 @@
        80% COMPLETION CHECK & PROGRESS LOGIC
        ========================================================================== */
     function calculateCompletionProgress() {
-      // 1. Verbs Mastered Progress (50% weight) -> Target: 35 verbs
       const verbFactor = Math.min(1, userState.masteredVerbs.length / 35);
-      
-      // 2. Total Question Practice (30% weight) -> Target: 30 questions
       const questionFactor = Math.min(1, userState.totalAnswered / 30);
-      
-      // 3. Badges / Arcade Achievements (20% weight) -> Target: 4 badges
       const badgeFactor = Math.min(1, userState.badges.length / 4);
 
       const totalPercentage = Math.round((verbFactor * 50) + (questionFactor * 30) + (badgeFactor * 20));
@@ -1710,11 +1722,11 @@
       canvas.height = 600;
       const ctx = canvas.getContext('2d');
 
-      ctx.fillStyle = '#1e293b';
+      ctx.fillStyle = '#0f172a';
       ctx.fillRect(0, 0, 600, 600);
 
       ctx.lineWidth = 12;
-      ctx.strokeStyle = '#d4af37';
+      ctx.strokeStyle = '#f59e0b';
       ctx.strokeRect(20, 20, 560, 560);
 
       ctx.textAlign = 'center';
@@ -1742,13 +1754,13 @@
     }
 
     /* ==========================================================================
-       CANVAS CERTIFICATE OF MASTERY
+       CANVAS CERTIFICATE OF MASTERY (RPG QUEST CHAMPION EDITION)
        ========================================================================== */
     function openCertificateModal() {
       const modal = document.getElementById('modal-certificate');
       modal.classList.remove('hidden');
       document.getElementById('cert-student-input').value = userState.studentName || 'VerbQuest Champion';
-      document.getElementById('cert-email-input').value = userState.studentEmail || '';
+      document.getElementById('cert-school-input').value = userState.schoolName || '';
       document.getElementById('cert-teacher-input').value = teacherState.name;
       renderCertificateCanvas();
       soundFX.playFlip();
@@ -1760,7 +1772,7 @@
 
     function updateCertPreview() {
       userState.studentName = document.getElementById('cert-student-input').value.trim() || 'VerbQuest Champion';
-      userState.studentEmail = document.getElementById('cert-email-input').value.trim();
+      userState.schoolName = document.getElementById('cert-school-input').value.trim();
       saveUserState();
       renderCertificateCanvas();
     }
@@ -1786,112 +1798,204 @@
       const w = canvas.width;  // 1600
       const h = canvas.height; // 1131
       const studentName = userState.studentName || 'VerbQuest Champion';
+      const schoolName = userState.schoolName || '';
       const teacherName = teacherState.name || 'Mrs. Nives Torresi';
 
-      // 1. Background
-      ctx.fillStyle = '#fdfbf7';
+      // 1. Parchment & Deep Slate Gradient Background
+      const bgGrad = ctx.createRadialGradient(w / 2, h / 2, 80, w / 2, h / 2, w * 0.75);
+      bgGrad.addColorStop(0, '#0f172a'); // slate-900 center
+      bgGrad.addColorStop(1, '#020617'); // dark midnight outer
+      ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, w, h);
 
-      // 2. Borders
-      ctx.lineWidth = 14;
-      ctx.strokeStyle = '#d4af37';
-      ctx.strokeRect(30, 30, w - 60, h - 60);
+      // 2. Dual Metallic Gold Guilloche Border
+      ctx.save();
+      ctx.strokeStyle = '#f59e0b';
+      ctx.lineWidth = 10;
+      ctx.strokeRect(36, 36, w - 72, h - 72);
 
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = '#997a15';
-      ctx.strokeRect(48, 48, w - 96, h - 96);
+      ctx.strokeStyle = '#b45309';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(52, 52, w - 104, h - 104);
 
-      // 3. Header Text
+      // Ornate RPG Corner Brackets
+      const drawBracket = (x, y, dx, dy) => {
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 6;
+        ctx.beginPath();
+        ctx.moveTo(x, y + dy * 50);
+        ctx.lineTo(x, y);
+        ctx.lineTo(x + dx * 50, y);
+        ctx.stroke();
+
+        ctx.fillStyle = '#f59e0b';
+        ctx.beginPath();
+        ctx.arc(x + dx * 16, y + dy * 16, 5, 0, Math.PI * 2);
+        ctx.fill();
+      };
+      drawBracket(68, 68, 1, 1);
+      drawBracket(w - 68, 68, -1, 1);
+      drawBracket(68, h - 68, 1, -1);
+      drawBracket(w - 68, h - 68, -1, -1);
+      ctx.restore();
+
+      // 3. Header Heraldry & Crest
       ctx.textAlign = 'center';
-      ctx.fillStyle = '#475569';
-      ctx.font = '700 24px sans-serif';
-      ctx.fillText('HIGH SCHOOL ENGLISH LANGUAGE DEPARTMENT', w / 2, 160);
+      ctx.fillStyle = '#fbbf24';
+      ctx.font = 'bold 24px system-ui, -apple-system, sans-serif';
+      ctx.fillText('⚔️  VERBQUEST GUILD OF MASTERY  ⚔️', w / 2, 130);
 
-      ctx.fillStyle = '#b45309';
-      ctx.font = '900 68px serif';
-      ctx.fillText('CERTIFICATE OF MASTERY', w / 2, 250);
+      // Big Embossed Trophy Heading
+      const titleGrad = ctx.createLinearGradient(w / 2 - 350, 0, w / 2 + 350, 0);
+      titleGrad.addColorStop(0, '#fef08a');
+      titleGrad.addColorStop(0.5, '#f59e0b');
+      titleGrad.addColorStop(1, '#d97706');
+      ctx.fillStyle = titleGrad;
+      ctx.font = '900 64px Georgia, serif';
+      ctx.fillText('CERTIFICATE OF MASTERY', w / 2, 215);
 
-      ctx.fillStyle = '#64748b';
-      ctx.font = '600 22px sans-serif';
-      ctx.fillText('THIS CERTIFICATE IS PROUDLY PRESENTED TO', w / 2, 320);
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = 'italic 23px Georgia, serif';
+      ctx.fillText('This honor is officially awarded to salute the valour & scholarship of:', w / 2, 285);
 
-      // 4. Student Name
-      ctx.fillStyle = '#4338ca';
-      ctx.font = 'italic 900 70px serif';
-      ctx.fillText(studentName, w / 2, 420);
+      // 4. Hero Student Name with Warm Glow
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 64px system-ui, -apple-system, sans-serif';
+      ctx.shadowColor = 'rgba(245, 158, 11, 0.55)';
+      ctx.shadowBlur = 20;
+      ctx.fillText(studentName, w / 2, 385);
+      ctx.shadowBlur = 0; // reset glow
 
-      ctx.beginPath();
-      ctx.moveTo(w / 2 - 280, 445);
-      ctx.lineTo(w / 2 + 280, 445);
-      ctx.strokeStyle = '#d4af37';
+      // Decorative Ribbon Line under Name
+      ctx.strokeStyle = '#f59e0b';
       ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(w / 2 - 320, 415);
+      ctx.lineTo(w / 2 + 320, 415);
       ctx.stroke();
 
-      // 5. Body Citation
-      ctx.fillStyle = '#334155';
-      ctx.font = '500 24px sans-serif';
-      ctx.fillText('For outstanding dedication and complete 80%+ mastery of English Irregular Verbs,', w / 2, 515);
-      ctx.font = '600 22px sans-serif';
-      ctx.fillText(`Awarded for academic excellence in ${teacherState.school}`, w / 2, 555);
+      // School / Guild Affiliation
+      if (schoolName) {
+        ctx.fillStyle = '#38bdf8';
+        ctx.font = 'bold 26px system-ui, -apple-system, sans-serif';
+        ctx.fillText(`of ${schoolName}`, w / 2, 465);
+      }
 
-      // 6. Stats Badge
-      const masteredCount = userState.masteredVerbs.length;
-      const progress = calculateCompletionProgress();
+      // 5. Academic Citation
+      const descY = schoolName ? 530 : 495;
+      ctx.fillStyle = '#cbd5e1';
+      ctx.font = '24px system-ui, -apple-system, sans-serif';
+      ctx.fillText('For successfully conquering English irregular verb inflections across all forms:', w / 2, descY);
       
-      ctx.fillStyle = '#f1f5f9';
-      ctx.strokeStyle = '#cbd5e1';
-      ctx.lineWidth = 2;
-      drawRoundedRect(ctx, w / 2 - 380, 620, 760, 80, 20);
-      ctx.fill();
-      ctx.stroke();
-
-      ctx.fillStyle = '#1e293b';
-      ctx.font = '800 22px sans-serif';
-      ctx.fillText(`Overall Mastery: ${progress}%  |  ${masteredCount}/${VERB_DATABASE.length} Verbs Mastered  |  Level ${userState.level} ${getLevelTitle(userState.level)}`, w / 2, 668);
-
-      // 7. Official Seal
-      const sealX = 260;
-      const sealY = 900;
-      ctx.beginPath();
-      ctx.arc(sealX, sealY, 75, 0, Math.PI * 2);
-      ctx.fillStyle = '#b91c1c';
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.arc(sealX, sealY, 62, 0, Math.PI * 2);
-      ctx.lineWidth = 4;
-      ctx.strokeStyle = '#fbbf24';
-      ctx.stroke();
-
       ctx.fillStyle = '#fef08a';
-      ctx.font = '900 36px sans-serif';
-      ctx.fillText('★', sealX, sealY - 5);
-      ctx.font = '800 12px sans-serif';
-      ctx.fillText('MRS. TORRESI', sealX, sealY + 25);
-      ctx.fillText('OFFICIAL SEAL', sealX, sealY + 40);
+      ctx.font = 'bold 26px Georgia, serif';
+      ctx.fillText('Base Form (V1)   •   Past Simple (V2)   •   Past Participle (V3)', w / 2, descY + 44);
 
-      // 8. Signatures
+      // 6. Gamified Achievement Pills
+      const statsY = descY + 115;
+      const badgesData = [
+        { label: '🛡️ QUEST CHAMPION', color: '#10b981' },
+        { label: '⚡ 100% VERB MASTERY', color: '#38bdf8' },
+        { label: '🔥 PERFECT RECALL', color: '#a855f7' }
+      ];
+
+      const pillWidth = 280;
+      const pillHeight = 56;
+      const gap = 30;
+      const totalW = (badgesData.length * pillWidth) + ((badgesData.length - 1) * gap);
+      let startX = (w - totalW) / 2;
+
+      badgesData.forEach(b => {
+        ctx.fillStyle = '#1e293b';
+        drawRoundedRect(ctx, startX, statsY, pillWidth, pillHeight, 28);
+        ctx.fill();
+
+        ctx.strokeStyle = b.color;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        ctx.fillStyle = '#f8fafc';
+        ctx.font = 'bold 18px system-ui, -apple-system, sans-serif';
+        ctx.fillText(b.label, startX + pillWidth / 2, statsY + 35);
+        startX += pillWidth + gap;
+      });
+
+      // 7. Gold Metallic Embossed Seal (Bottom Center)
+      const sealX = w / 2;
+      const sealY = h - 230;
+      const sealR = 85;
+
+      const sealGrad = ctx.createLinearGradient(sealX - 85, sealY - 85, sealX + 85, sealY + 85);
+      sealGrad.addColorStop(0, '#fef08a');
+      sealGrad.addColorStop(0.3, '#f59e0b');
+      sealGrad.addColorStop(0.7, '#b45309');
+      sealGrad.addColorStop(1, '#78350f');
+
+      ctx.fillStyle = sealGrad;
+      ctx.beginPath();
+      ctx.arc(sealX, sealY, sealR, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.strokeStyle = '#fef08a';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.arc(sealX, sealY, sealR - 10, 0, Math.PI * 2);
+      ctx.stroke();
+
+      ctx.fillStyle = '#451a03';
+      ctx.font = 'bold 28px system-ui, sans-serif';
+      ctx.fillText('👑', sealX, sealY - 14);
+      ctx.font = 'bold 16px system-ui, sans-serif';
+      ctx.fillText('VERBQUEST', sealX, sealY + 16);
+      ctx.font = '900 13px system-ui, sans-serif';
+      ctx.fillText('CHAMPION', sealX, sealY + 35);
+
+      // 8. Signatures & Date (Left & Right)
+      const today = new Date();
+      const day = String(today.getDate()).padStart(2, '0');
+      const month = String(today.getMonth() + 1).padStart(2, '0');
+      const year = today.getFullYear();
+      const dateStr = `${day}/${month}/${year}`;
+
+      // Left Date Block
       ctx.textAlign = 'left';
-      ctx.fillStyle = '#475569';
-      ctx.font = '600 20px sans-serif';
-      ctx.fillText(`Date: ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`, 600, 920);
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = 'bold 16px system-ui, -apple-system, sans-serif';
+      ctx.fillText('DATE OF CONQUEST', 160, h - 260);
+
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = 'bold 28px system-ui, -apple-system, sans-serif';
+      ctx.fillText(dateStr, 160, h - 220);
+
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.moveTo(600, 935);
-      ctx.lineTo(820, 935);
-      ctx.strokeStyle = '#cbd5e1';
-      ctx.lineWidth = 2;
+      ctx.moveTo(160, h - 200);
+      ctx.lineTo(390, h - 200);
       ctx.stroke();
 
-      ctx.fillText(`Course Instructor`, 1050, 930);
-      ctx.font = 'italic 700 28px serif';
-      ctx.fillStyle = '#4338ca';
-      ctx.fillText(teacherName, 1050, 885);
+      // Right Instructor Block
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = 'bold 16px system-ui, -apple-system, sans-serif';
+      ctx.fillText('CERTIFIED BY INSTRUCTOR', w - 160, h - 260);
+
+      ctx.font = 'italic 700 32px Georgia, serif';
+      ctx.fillStyle = '#fef08a';
+      ctx.fillText(teacherName, w - 160, h - 220);
+
+      ctx.strokeStyle = '#475569';
+      ctx.lineWidth = 3;
       ctx.beginPath();
-      ctx.moveTo(1050, 940);
-      ctx.lineTo(1380, 940);
-      ctx.strokeStyle = '#cbd5e1';
-      ctx.lineWidth = 2;
+      ctx.moveTo(w - 410, h - 200);
+      ctx.lineTo(w - 160, h - 200);
       ctx.stroke();
+
+      // 9. Quest Verification Code & Privacy Notice
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#64748b';
+      ctx.font = 'bold 15px monospace';
+      ctx.fillText(`QUEST CODE: VQ-${year}-CHAMP-${Math.floor(1000 + Math.random() * 9000)}  •  AD-FREE & ZERO DATA RETENTION`, w / 2, h - 85);
     }
 
     function downloadCertificatePNG() {
@@ -1900,11 +2004,21 @@
       link.download = `VerbQuest_Certificate_${userState.studentName.replace(/\s+/g, '_')}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
-      showNotification("Certificate downloaded!", "success");
+      showNotification("High-Res Quest Certificate downloaded!", "success");
     }
 
     function printCertificate() {
-      window.print();
+      const canvas = document.getElementById('certificate-canvas');
+      const win = window.open('', '_blank');
+      win.document.write(`
+        <html>
+          <head><title>Print VerbQuest Certificate</title></head>
+          <body style="margin:0; display:flex; justify-content:center; align-items:center; height:100vh; background:#020617;">
+            <img src="${canvas.toDataURL('image/png')}" style="max-width:98%; max-height:98%; border-radius:14px; box-shadow:0 20px 40px rgba(0,0,0,0.8);"/>
+            <script>setTimeout(() => { window.print(); window.close(); }, 400);<\/script>
+          </body>
+        </html>
+      `);
     }
 
     /* ==========================================================================
@@ -1985,5 +2099,3 @@
 </body>
 </html>
 ```
-
----
